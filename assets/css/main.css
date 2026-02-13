@@ -15,7 +15,7 @@
   12. Trade Account
   13. Suppliers Logo
   14. Social Feed Area
-  15. Devider
+  15. Divider
   16. Product Feeds
   17. Meet The Team
   18. Quote Module
@@ -49,7 +49,7 @@
   --color-success:    #6da626;
 
   --font-heading: "Open Sans", sans-serif;
-  --font-body:    "Poppins", serif;
+  --font-body:    "Poppins", sans-serif;
 }
 
 /*-------------------------------------------
@@ -551,8 +551,7 @@ img {
     min-width: 169px !important;
     font-size: 12px;
   }
-  
-  /* Second block rules override above where needed */
+
   #header .header__logo-wrapper {
     max-width: 110px;
   }
