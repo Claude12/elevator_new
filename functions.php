@@ -171,6 +171,11 @@ require get_template_directory() . '/class-wp-bootstrap-navwalker.php';
 require get_template_directory() . '/inc/enqueue.php';
 
 /**
+ * WooCommerce helper functions (product feeds, etc.).
+ */
+require get_template_directory() . '/inc/woocommerce-helpers.php';
+
+/**
  * ACF Options Page.
  */
 require get_template_directory() . '/inc/acf.php';
