@@ -1,6 +1,7 @@
 # OS files
 .DS_Store
 Thumbs.db
+Desktop.ini
 
 # Editor files
 *.swp
@@ -8,10 +9,21 @@ Thumbs.db
 *.swn
 *.bak
 *~
+*.orig
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
 
 # Dependencies
 node_modules/
 vendor/
 
+# Build artifacts
+/dist/
+
 # WordPress
 wp-content/uploads/
+
+# Composer lock (optional — uncomment if you want deterministic builds)
+# composer.lock

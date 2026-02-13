@@ -48,7 +48,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 <img class="bg-logo-3" src="/wp-content/uploads/2025/10/cropped-J12535_EEL_Logo-Final_Brandmark-Logo-Byzantine-Blue-Transparent-1.png" alt="">
 
 <!-- Header Section Start -->
-<header id="header" class="navigation-wrapper container-fluid sticky-top px-0" style="background: <?php echo esc_attr( get_field( 'background_color', 'options' ) ); ?>;">
+<?php $bg_color = function_exists( 'get_field' ) ? get_field( 'background_color', 'options' ) : ''; ?>
+<header id="header" class="navigation-wrapper container-fluid sticky-top px-0" style="background: <?php echo esc_attr( $bg_color ); ?>;">
 
 	<!-- Top Bar -->
 	<div class="container header-container">
@@ -57,8 +58,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<!-- Logo -->
 			<div class="header__logo-wrapper">
 				<?php
-				$logo = get_field( 'logo', 'options' );
-				if ( $logo ) :
+				$logo = function_exists( 'get_field' ) ? get_field( 'logo', 'options' ) : false;
+				if ( $logo && is_array( $logo ) ) :
 					?>
 					<a id="logo-wrapper-head" class="text-left" href="<?php echo esc_url( home_url( '/' ) ); ?>">
 						<img id="logo-1" src="<?php echo esc_url( $logo['url'] ); ?>" alt="<?php echo esc_attr( $logo['alt'] ); ?>">
@@ -75,8 +76,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<label class="screen-reader-text" for="woocommerce-product-search-field-desktop"><?php esc_html_e( 'Search for:', 'elevator' ); ?></label>
 						<input type="search" id="woocommerce-product-search-field-desktop" class="search-field"
 							placeholder="<?php esc_attr_e( 'What are you looking for?', 'elevator' ); ?>"
-							value="<?php echo get_search_query(); ?>" name="s"
-							style="background: <?php echo esc_attr( get_field( 'background_color', 'options' ) ); ?>;" />
+							value="<?php echo esc_attr( get_search_query() ); ?>" name="s"
+							style="background: <?php echo esc_attr( $bg_color ); ?>;" />
 						<button type="submit" class="search-submit"><i class="fas fa-search"></i></button>
 						<input type="hidden" name="post_type" value="product" />
 					</form>
@@ -95,7 +96,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 									<label class="screen-reader-text" for="woocommerce-product-search-field-mobile"><?php esc_html_e( 'Search for:', 'elevator' ); ?></label>
 									<input type="search" id="woocommerce-product-search-field-mobile" class="search-field"
 										placeholder="<?php esc_attr_e( 'What are you looking for?', 'elevator' ); ?>"
-										value="<?php echo get_search_query(); ?>" name="s" />
+										value="<?php echo esc_attr( get_search_query() ); ?>" name="s" />
 									<button type="submit" class="search-submit"><i class="fas fa-search"></i></button>
 									<input type="hidden" name="post_type" value="product" />
 								</form>
@@ -146,17 +147,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 				</ul>
 
 				<!-- Wishlist -->
-				<a class="wishlist header-phone tooltips" data-tooltip="<?php esc_attr_e( 'Your Favourites List', 'elevator' ); ?>" href="/wishlist"><i class="fa-solid fa-heart"></i></a>
+				<a class="wishlist header-phone tooltips" data-tooltip="<?php esc_attr_e( 'Your Favourites List', 'elevator' ); ?>"
+					href="<?php echo esc_url( home_url( '/wishlist' ) ); ?>"><i class="fa-solid fa-heart"></i></a>
 
 				<!-- Phone -->
+				<?php $header_number = function_exists( 'get_field' ) ? get_field( 'header_number', 'options' ) : ''; ?>
 				<a class="header-phone tooltips" data-tooltip="<?php esc_attr_e( 'Call us', 'elevator' ); ?>"
-					href="tel:<?php echo esc_attr( get_field( 'header_number', 'options' ) ); ?>" title="<?php esc_attr_e( 'Direct call number', 'elevator' ); ?>">
+					href="tel:<?php echo esc_attr( $header_number ); ?>" title="<?php esc_attr_e( 'Direct call number', 'elevator' ); ?>">
 					<i class="fas fa-phone-alt"></i>
 				</a>
 
 				<!-- Email -->
+				<?php $header_contact_link = function_exists( 'get_field' ) ? get_field( 'header_contact_link', 'options' ) : ''; ?>
 				<a class="header-message tooltips d-block-desktop" data-tooltip="<?php esc_attr_e( 'Send us a message', 'elevator' ); ?>"
-					href="<?php echo esc_url( get_field( 'header_contact_link', 'options' ) ); ?>" title="<?php esc_attr_e( 'Contact us', 'elevator' ); ?>">
+					href="<?php echo esc_url( $header_contact_link ); ?>" title="<?php esc_attr_e( 'Contact us', 'elevator' ); ?>">
 					<i class="fas fa-envelope"></i>
 				</a>
 

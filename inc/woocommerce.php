@@ -1,11 +1,14 @@
 <?php
 /**
- * WooCommerce Compatibility File
+ * WooCommerce Compatibility File.
  *
  * @link https://woocommerce.com/
- *
  * @package elevator
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Declare WooCommerce support.
@@ -33,14 +36,21 @@ add_action( 'after_setup_theme', 'elevator_woocommerce_setup' );
 
 /**
  * WooCommerce specific scripts & stylesheets.
- *
- * @return void
  */
 function elevator_woocommerce_scripts() {
-	wp_enqueue_style( 'elevator-woocommerce-style', get_template_directory_uri() . '/woocommerce.css', array(), _S_VERSION );
+	$woo_css_path = get_template_directory() . '/woocommerce.css';
 
-	$font_path   = WC()->plugin_url() . '/assets/fonts/';
-	$inline_font = '@font-face {
+	// Only enqueue if the file actually exists.
+	if ( file_exists( $woo_css_path ) ) {
+		wp_enqueue_style(
+			'elevator-woocommerce-style',
+			get_template_directory_uri() . '/woocommerce.css',
+			array(),
+			filemtime( $woo_css_path )
+		);
+
+		$font_path   = WC()->plugin_url() . '/assets/fonts/';
+		$inline_font = '@font-face {
 			font-family: "star";
 			src: url("' . $font_path . 'star.eot");
 			src: url("' . $font_path . 'star.eot?#iefix") format("embedded-opentype"),
@@ -51,29 +61,24 @@ function elevator_woocommerce_scripts() {
 			font-style: normal;
 		}';
 
-	wp_add_inline_style( 'elevator-woocommerce-style', $inline_font );
+		wp_add_inline_style( 'elevator-woocommerce-style', $inline_font );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'elevator_woocommerce_scripts' );
 
 /**
  * Disable the default WooCommerce stylesheet.
- *
- * Removing the default WooCommerce stylesheet and enqueing your own will
- * protect you during WooCommerce core updates.
- *
- * @link https://docs.woocommerce.com/document/disable-the-default-stylesheet/
  */
 add_filter( 'woocommerce_enqueue_styles', '__return_empty_array' );
 
 /**
  * Add 'woocommerce-active' class to the body tag.
  *
- * @param  array $classes CSS classes applied to the body tag.
- * @return array $classes modified to include 'woocommerce-active' class.
+ * @param array $classes CSS classes applied to the body tag.
+ * @return array
  */
 function elevator_woocommerce_active_body_class( $classes ) {
 	$classes[] = 'woocommerce-active';
-
 	return $classes;
 }
 add_filter( 'body_class', 'elevator_woocommerce_active_body_class' );
@@ -81,18 +86,15 @@ add_filter( 'body_class', 'elevator_woocommerce_active_body_class' );
 /**
  * Related Products Args.
  *
- * @param array $args related products args.
- * @return array $args related products args.
+ * @param array $args Related products args.
+ * @return array
  */
 function elevator_woocommerce_related_products_args( $args ) {
 	$defaults = array(
 		'posts_per_page' => 3,
 		'columns'        => 3,
 	);
-
-	$args = wp_parse_args( $defaults, $args );
-
-	return $args;
+	return wp_parse_args( $defaults, $args );
 }
 add_filter( 'woocommerce_output_related_products_args', 'elevator_woocommerce_related_products_args' );
 
@@ -104,15 +106,11 @@ remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wra
 
 if ( ! function_exists( 'elevator_woocommerce_wrapper_before' ) ) {
 	/**
-	 * Before Content.
-	 *
-	 * Wraps all WooCommerce content in wrappers which match the theme markup.
-	 *
-	 * @return void
+	 * Before Content — wraps WooCommerce in theme markup.
 	 */
 	function elevator_woocommerce_wrapper_before() {
 		?>
-			<main id="primary" class="site-main">
+		<main id="primary" class="site-main">
 		<?php
 	}
 }
@@ -120,46 +118,27 @@ add_action( 'woocommerce_before_main_content', 'elevator_woocommerce_wrapper_bef
 
 if ( ! function_exists( 'elevator_woocommerce_wrapper_after' ) ) {
 	/**
-	 * After Content.
-	 *
-	 * Closes the wrapping divs.
-	 *
-	 * @return void
+	 * After Content — closes the wrapping divs.
 	 */
 	function elevator_woocommerce_wrapper_after() {
 		?>
-			</main><!-- #main -->
+		</main><!-- #main -->
 		<?php
 	}
 }
 add_action( 'woocommerce_after_main_content', 'elevator_woocommerce_wrapper_after' );
 
-/**
- * Sample implementation of the WooCommerce Mini Cart.
- *
- * You can add the WooCommerce Mini Cart to header.php like so ...
- *
-	<?php
-		if ( function_exists( 'elevator_woocommerce_header_cart' ) ) {
-			elevator_woocommerce_header_cart();
-		}
-	?>
- */
-
 if ( ! function_exists( 'elevator_woocommerce_cart_link_fragment' ) ) {
 	/**
-	 * Cart Fragments.
-	 *
-	 * Ensure cart contents update when products are added to the cart via AJAX.
+	 * Cart Fragments — update cart via AJAX.
 	 *
 	 * @param array $fragments Fragments to refresh via AJAX.
-	 * @return array Fragments to refresh via AJAX.
+	 * @return array
 	 */
 	function elevator_woocommerce_cart_link_fragment( $fragments ) {
 		ob_start();
 		elevator_woocommerce_cart_link();
 		$fragments['a.cart-contents'] = ob_get_clean();
-
 		return $fragments;
 	}
 }
@@ -167,11 +146,7 @@ add_filter( 'woocommerce_add_to_cart_fragments', 'elevator_woocommerce_cart_link
 
 if ( ! function_exists( 'elevator_woocommerce_cart_link' ) ) {
 	/**
-	 * Cart Link.
-	 *
-	 * Displayed a link to the cart including the number of items present and the cart total.
-	 *
-	 * @return void
+	 * Cart Link — displayed in header.
 	 */
 	function elevator_woocommerce_cart_link() {
 		?>
@@ -183,7 +158,8 @@ if ( ! function_exists( 'elevator_woocommerce_cart_link' ) ) {
 				WC()->cart->get_cart_contents_count()
 			);
 			?>
-			<span class="amount"><?php echo wp_kses_data( WC()->cart->get_cart_subtotal() ); ?></span> <span class="count"><?php echo esc_html( $item_count_text ); ?></span>
+			<span class="amount"><?php echo wp_kses_data( WC()->cart->get_cart_subtotal() ); ?></span>
+			<span class="count"><?php echo esc_html( $item_count_text ); ?></span>
 		</a>
 		<?php
 	}
@@ -192,28 +168,16 @@ if ( ! function_exists( 'elevator_woocommerce_cart_link' ) ) {
 if ( ! function_exists( 'elevator_woocommerce_header_cart' ) ) {
 	/**
 	 * Display Header Cart.
-	 *
-	 * @return void
 	 */
 	function elevator_woocommerce_header_cart() {
-		if ( is_cart() ) {
-			$class = 'current-menu-item';
-		} else {
-			$class = '';
-		}
+		$class = is_cart() ? 'current-menu-item' : '';
 		?>
 		<ul id="site-header-cart" class="site-header-cart">
 			<li class="<?php echo esc_attr( $class ); ?>">
 				<?php elevator_woocommerce_cart_link(); ?>
 			</li>
 			<li>
-				<?php
-				$instance = array(
-					'title' => '',
-				);
-
-				the_widget( 'WC_Widget_Cart', $instance );
-				?>
+				<?php the_widget( 'WC_Widget_Cart', array( 'title' => '' ) ); ?>
 			</li>
 		</ul>
 		<?php

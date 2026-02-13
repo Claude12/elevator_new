@@ -5,14 +5,17 @@
  * @package elevator
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
- * Enqueue scripts and styles.
+ * Enqueue front-end scripts and styles.
  */
 function elevator_scripts() {
 
 	// --- Vendor CSS (CDN) ---
 
-	// Bootstrap 5.3 CSS.
 	wp_enqueue_style(
 		'elevator-bootstrap',
 		'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
@@ -20,7 +23,6 @@ function elevator_scripts() {
 		'5.3.3'
 	);
 
-	// Swiper CSS.
 	wp_enqueue_style(
 		'elevator-swiper',
 		'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
@@ -30,13 +32,13 @@ function elevator_scripts() {
 
 	// --- Custom CSS ---
 
-	// Main custom CSS with filemtime cache-busting.
-	$main_css_path    = get_template_directory() . '/assets/css/main.css';
+	// Main custom CSS — file lives at /assets/main.css.
+	$main_css_path    = get_template_directory() . '/assets/main.css';
 	$main_css_version = file_exists( $main_css_path ) ? filemtime( $main_css_path ) : _S_VERSION;
 	wp_enqueue_style(
 		'elevator-main',
-		get_template_directory_uri() . '/assets/css/main.css',
-		array( 'elevator-bootstrap' ),
+		get_template_directory_uri() . '/assets/main.css',
+		array( 'elevator-bootstrap', 'elevator-swiper' ),
 		$main_css_version
 	);
 
@@ -51,18 +53,16 @@ function elevator_scripts() {
 
 	// --- Vendor JS (CDN) ---
 
-	// Bootstrap 5.3 JS (bundle includes Popper).
 	wp_enqueue_script(
-		'elevator-bootstrap',
+		'elevator-bootstrap-js',
 		'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',
 		array(),
 		'5.3.3',
 		true
 	);
 
-	// Swiper JS.
 	wp_enqueue_script(
-		'elevator-swiper',
+		'elevator-swiper-js',
 		'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
 		array(),
 		'11.0.0',
@@ -71,28 +71,17 @@ function elevator_scripts() {
 
 	// --- Custom JS ---
 
-	// Toggle navigation (Bootstrap responsive nav helper).
-	$toggle_nav_path = get_template_directory() . '/assets/js/toggle-navigation.js';
-	if ( file_exists( $toggle_nav_path ) ) {
+	$main_js_path    = get_template_directory() . '/assets/js/main.js';
+	$main_js_version = file_exists( $main_js_path ) ? filemtime( $main_js_path ) : _S_VERSION;
+	if ( file_exists( $main_js_path ) ) {
 		wp_enqueue_script(
-			'elevator-toggle-navigation',
-			get_template_directory_uri() . '/assets/js/toggle-navigation.js',
-			array( 'elevator-bootstrap' ),
-			filemtime( $toggle_nav_path ),
+			'elevator-main-js',
+			get_template_directory_uri() . '/assets/js/main.js',
+			array( 'jquery', 'elevator-bootstrap-js' ),
+			$main_js_version,
 			true
 		);
 	}
-
-	// Main JS with jQuery dependency and filemtime cache-busting.
-	$main_js_path    = get_template_directory() . '/assets/js/main.js';
-	$main_js_version = file_exists( $main_js_path ) ? filemtime( $main_js_path ) : _S_VERSION;
-	wp_enqueue_script(
-		'elevator-main',
-		get_template_directory_uri() . '/assets/js/main.js',
-		array( 'jquery', 'elevator-bootstrap' ),
-		$main_js_version,
-		true
-	);
 
 	// Underscores navigation script.
 	$nav_js_path = get_template_directory() . '/js/navigation.js';
@@ -109,7 +98,7 @@ function elevator_scripts() {
 	// Localize script for AJAX on WooCommerce account/product pages.
 	if ( class_exists( 'WooCommerce' ) && ( is_account_page() || is_product() ) ) {
 		wp_localize_script(
-			'elevator-main',
+			'elevator-main-js',
 			'elevator_ajax',
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
