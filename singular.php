@@ -1,6 +1,6 @@
 <?php
 /**
- * The template for displaying singular pages (WooCommerce pages, etc.).
+ * The template for displaying singular pages (pages, WooCommerce pages, etc.).
  *
  * @package elevator
  */
@@ -34,19 +34,19 @@ $logo_main = function_exists( 'get_field' ) ? get_field( 'logo', 'options' ) : f
 
 			<div class="banner-row-title">
 				<div class="icon">
-					<div class="icon">
-						<?php if ( function_exists( 'is_account_page' ) && is_account_page() ) : ?>
-							<i class="fa-solid fa-user"></i>
-						<?php else : ?>
-							<i class="fas fa-basket-shopping"></i>
-						<?php endif; ?>
-					</div>
+					<?php if ( function_exists( 'is_account_page' ) && is_account_page() ) : ?>
+						<i class="fa-solid fa-user"></i>
+					<?php elseif ( function_exists( 'is_cart' ) && is_cart() ) : ?>
+						<i class="fas fa-shopping-cart"></i>
+					<?php elseif ( function_exists( 'is_checkout' ) && is_checkout() ) : ?>
+						<i class="fas fa-credit-card"></i>
+					<?php else : ?>
+						<i class="fas fa-basket-shopping"></i>
+					<?php endif; ?>
 				</div>
 
 				<div class="banner-text">
-					<div class="banner-text">
-						<h1 class="text-white woo-custom-title"><?php the_title(); ?></h1>
-					</div>
+					<h1 class="text-white woo-custom-title"><?php the_title(); ?></h1>
 				</div>
 			</div>
 
@@ -54,9 +54,41 @@ $logo_main = function_exists( 'get_field' ) ? get_field( 'logo', 'options' ) : f
 	</div>
 </section>
 
+<?php
+// Breadcrumbs for WooCommerce pages.
+if ( function_exists( 'is_woocommerce' ) ) : ?>
+	<section class="breadcrumbs py-3">
+		<div class="container">
+			<?php
+			if ( function_exists( 'rank_math_the_breadcrumbs' ) ) {
+				rank_math_the_breadcrumbs();
+			}
+			?>
+		</div>
+	</section>
+<?php endif; ?>
+
 <div class="container-fluid">
 	<div class="container py-5">
-		<?php the_content(); ?>
+
+		<?php
+		while ( have_posts() ) :
+			the_post();
+			?>
+
+			<?php
+			// WooCommerce notices (for My Account, Cart, Checkout pages).
+			if ( function_exists( 'wc_print_notices' ) ) {
+				wc_print_notices();
+			}
+			?>
+
+			<div class="woocommerce">
+				<?php the_content(); ?>
+			</div>
+
+		<?php endwhile; ?>
+
 	</div>
 </div>
 

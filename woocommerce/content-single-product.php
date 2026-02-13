@@ -37,6 +37,22 @@ if ( post_password_required() ) {
 	do_action( 'woocommerce_before_single_product_summary' );
 	?>
 
+	<!-- Custom: product title, description, and price above the summary -->
+	<div class="customized-section">
+		<h1 class="product_title entry-title"><?php the_title(); ?></h1>
+
+		<?php
+		$short_description = apply_filters( 'woocommerce_short_description', $product->get_short_description() );
+		if ( ! empty( $short_description ) ) :
+		?>
+			<div class="product-short-description">
+				<?php echo wp_kses_post( $short_description ); ?>
+			</div>
+		<?php endif; ?>
+
+		<p class="price"><?php echo $product->get_price_html(); // WPCS: XSS ok. ?></p>
+	</div>
+
 	<div class="summary entry-summary">
 
 		<?php

@@ -32,12 +32,12 @@ function elevator_scripts() {
 
 	// --- Custom CSS ---
 
-	// Main custom CSS — file lives at /assets/main.css.
-	$main_css_path    = get_template_directory() . '/assets/main.css';
+	// Main custom CSS — file lives at /assets/css/main.css.
+	$main_css_path    = get_template_directory() . '/assets/css/main.css';
 	$main_css_version = file_exists( $main_css_path ) ? filemtime( $main_css_path ) : _S_VERSION;
 	wp_enqueue_style(
 		'elevator-main',
-		get_template_directory_uri() . '/assets/main.css',
+		get_template_directory_uri() . '/assets/css/main.css',
 		array( 'elevator-bootstrap', 'elevator-swiper' ),
 		$main_css_version
 	);

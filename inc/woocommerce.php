@@ -48,28 +48,15 @@ function elevator_woocommerce_scripts() {
 			array(),
 			filemtime( $woo_css_path )
 		);
-
-		$font_path   = WC()->plugin_url() . '/assets/fonts/';
-		$inline_font = '@font-face {
-			font-family: "star";
-			src: url("' . $font_path . 'star.eot");
-			src: url("' . $font_path . 'star.eot?#iefix") format("embedded-opentype"),
-				url("' . $font_path . 'star.woff") format("woff"),
-				url("' . $font_path . 'star.ttf") format("truetype"),
-				url("' . $font_path . 'star.svg#star") format("svg");
-			font-weight: normal;
-			font-style: normal;
-		}';
-
-		wp_add_inline_style( 'elevator-woocommerce-style', $inline_font );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'elevator_woocommerce_scripts' );
 
 /**
- * Disable the default WooCommerce stylesheet.
+ * NOTE: We intentionally keep WooCommerce default stylesheets enabled.
+ * They handle the product grid, gallery, and form layout.
+ * Custom overrides go in woocommerce.css (when created).
  */
-add_filter( 'woocommerce_enqueue_styles', '__return_empty_array' );
 
 /**
  * Add 'woocommerce-active' class to the body tag.
@@ -99,34 +86,20 @@ function elevator_woocommerce_related_products_args( $args ) {
 add_filter( 'woocommerce_output_related_products_args', 'elevator_woocommerce_related_products_args' );
 
 /**
- * Remove default WooCommerce wrapper.
+ * Remove default WooCommerce content wrappers.
+ *
+ * Our archive-product.php and single-product.php templates provide
+ * their own container markup, so the default <main> wrapper is not needed.
  */
 remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
 remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
 
-if ( ! function_exists( 'elevator_woocommerce_wrapper_before' ) ) {
-	/**
-	 * Before Content — wraps WooCommerce in theme markup.
-	 */
-	function elevator_woocommerce_wrapper_before() {
-		?>
-		<main id="primary" class="site-main">
-		<?php
-	}
-}
-add_action( 'woocommerce_before_main_content', 'elevator_woocommerce_wrapper_before' );
-
-if ( ! function_exists( 'elevator_woocommerce_wrapper_after' ) ) {
-	/**
-	 * After Content — closes the wrapping divs.
-	 */
-	function elevator_woocommerce_wrapper_after() {
-		?>
-		</main><!-- #main -->
-		<?php
-	}
-}
-add_action( 'woocommerce_after_main_content', 'elevator_woocommerce_wrapper_after' );
+/**
+ * Remove default WooCommerce breadcrumbs.
+ *
+ * We use Rank Math breadcrumbs instead.
+ */
+remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
 
 if ( ! function_exists( 'elevator_woocommerce_cart_link_fragment' ) ) {
 	/**
