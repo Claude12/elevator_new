@@ -24,7 +24,7 @@ if ( ! wc_ship_to_billing_address_only() && wc_shipping_enabled() ) {
 		'woocommerce_my_account_get_addresses',
 		array(
 			'billing'  => __( 'Billing address', 'woocommerce' ),
-			'shipping' => __( 'Branch address', 'woocommerce' ),
+			'shipping' => __( 'Branch address', 'woocommerce' ), // Custom: "Branch address" label.
 		),
 		$customer_id
 	);

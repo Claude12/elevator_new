@@ -17,8 +17,8 @@
  * @version 4.4.0
  */
 
-if (!defined('ABSPATH')) {
-	exit; // Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 $allowed_html = array(
@@ -27,19 +27,26 @@ $allowed_html = array(
 	),
 );
 
-$user_id = get_current_user_id();
-$company_name = get_field('company_name', 'user_' . $user_id);
-$company_logo = get_field('company_logo', 'user_' . $user_id);
+// Custom: Show company branding from ACF user fields.
+if ( function_exists( 'get_field' ) ) {
+	$user_id      = get_current_user_id();
+	$company_name = get_field( 'company_name', 'user_' . $user_id );
+	$company_logo = get_field( 'company_logo', 'user_' . $user_id );
+} else {
+	$company_name = false;
+	$company_logo = false;
+}
 ?>
 
-<?php if ($company_logo || $company_name): ?>
-	<div class="account-branding" style="display: flex; align-items: center; margin-bottom: 20px;">
-		<?php if ($company_logo): ?>
-			<img src="<?php echo esc_url($company_logo['url']); ?>" alt="<?php echo esc_attr($company_name); ?>"
-				style="height: 60px; width: auto; margin-right: 16px;" />
+<?php if ( $company_logo || $company_name ) : ?>
+	<div class="account-branding">
+		<?php if ( $company_logo && is_array( $company_logo ) ) : ?>
+			<img src="<?php echo esc_url( $company_logo['url'] ); ?>"
+				alt="<?php echo esc_attr( $company_name ?: '' ); ?>"
+				class="account-branding__logo" />
 		<?php endif; ?>
-		<?php if ($company_name): ?>
-			<h2 style="margin: 0;"><?php echo esc_html($company_name); ?></h2>
+		<?php if ( $company_name ) : ?>
+			<h2 class="account-branding__name"><?php echo esc_html( $company_name ); ?></h2>
 		<?php endif; ?>
 	</div>
 <?php endif; ?>
@@ -48,9 +55,9 @@ $company_logo = get_field('company_logo', 'user_' . $user_id);
 	<?php
 	printf(
 		/* translators: 1: user display name 2: logout url */
-		wp_kses(__('Hello %1$s (not %1$s? <a href="%2$s">Log out</a>)', 'woocommerce'), $allowed_html),
-		'<strong>' . esc_html($current_user->display_name) . '</strong>',
-		esc_url(wc_logout_url())
+		wp_kses( __( 'Hello %1$s (not %1$s? <a href="%2$s">Log out</a>)', 'woocommerce' ), $allowed_html ),
+		'<strong>' . esc_html( $current_user->display_name ) . '</strong>',
+		esc_url( wc_logout_url() )
 	);
 	?>
 </p>
@@ -58,16 +65,16 @@ $company_logo = get_field('company_logo', 'user_' . $user_id);
 <p>
 	<?php
 	/* translators: 1: Orders URL 2: Address URL 3: Account URL. */
-	$dashboard_desc = __('From your account dashboard you can view your <a href="%1$s">recent orders</a>, manage your <a href="%2$s">billing address</a>, and <a href="%3$s">edit your account details</a>.', 'woocommerce');
-	if (wc_shipping_enabled()) {
+	$dashboard_desc = __( 'From your account dashboard you can view your <a href="%1$s">recent orders</a>, manage your <a href="%2$s">billing address</a>, and <a href="%3$s">edit your account details</a>.', 'woocommerce' );
+	if ( wc_shipping_enabled() ) {
 		/* translators: 1: Orders URL 2: Addresses URL 3: Account URL. */
-		$dashboard_desc = __('From your account dashboard you can view your <a href="%1$s">recent orders</a>, manage your <a href="%2$s">shipping and billing addresses</a>, and <a href="%3$s">edit your account details</a>.', 'woocommerce');
+		$dashboard_desc = __( 'From your account dashboard you can view your <a href="%1$s">recent orders</a>, manage your <a href="%2$s">shipping and billing addresses</a>, and <a href="%3$s">edit your account details</a>.', 'woocommerce' );
 	}
 	printf(
-		wp_kses($dashboard_desc, $allowed_html),
-		esc_url(wc_get_endpoint_url('orders')),
-		esc_url(wc_get_endpoint_url('edit-address')),
-		esc_url(wc_get_endpoint_url('edit-account'))
+		wp_kses( $dashboard_desc, $allowed_html ),
+		esc_url( wc_get_endpoint_url( 'orders' ) ),
+		esc_url( wc_get_endpoint_url( 'edit-address' ) ),
+		esc_url( wc_get_endpoint_url( 'edit-account' ) )
 	);
 	?>
 </p>
@@ -78,20 +85,18 @@ $company_logo = get_field('company_logo', 'user_' . $user_id);
  *
  * @since 2.6.0
  */
-do_action('woocommerce_account_dashboard');
+do_action( 'woocommerce_account_dashboard' );
 
 /**
  * Deprecated woocommerce_before_my_account action.
  *
  * @deprecated 2.6.0
  */
-do_action('woocommerce_before_my_account');
+do_action( 'woocommerce_before_my_account' );
 
 /**
  * Deprecated woocommerce_after_my_account action.
  *
  * @deprecated 2.6.0
  */
-do_action('woocommerce_after_my_account');
-
-/* Omit closing PHP tag at the end of PHP files to avoid "headers already sent" issues. */
+do_action( 'woocommerce_after_my_account' );
