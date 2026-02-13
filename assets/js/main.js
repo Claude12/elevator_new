@@ -150,9 +150,60 @@ jQuery(document).ready(function ($) {
           // Update button state
           button.text("Added").prop("disabled", true);
         }
-      }
+      },
     );
   });
+
+  /**
+   * Equal height for product loop items on archive pages.
+   */
+  (function () {
+    "use strict";
+
+    function equalizeProductHeights() {
+      var products = document.querySelectorAll(
+        ".archive ul.products li.product a.woocommerce-LoopProduct-link",
+      );
+
+      if (!products.length) {
+        products = document.querySelectorAll(
+          '.archive ul.products li.product a[aria-label^="Visit product"]',
+        );
+      }
+
+      if (!products.length) {
+        return;
+      }
+
+      var maxHeight = 0;
+
+      // Reset heights first to get accurate measurement.
+      products.forEach(function (product) {
+        product.style.height = "";
+      });
+
+      products.forEach(function (product) {
+        if (product.offsetHeight > maxHeight) {
+          maxHeight = product.offsetHeight;
+        }
+      });
+
+      products.forEach(function (product) {
+        product.style.height = maxHeight + "px";
+      });
+    }
+
+    window.addEventListener("load", function () {
+      setTimeout(equalizeProductHeights, 100);
+    });
+
+    // Re-equalize on window resize.
+    var resizeTimer;
+    window.addEventListener("resize", function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(equalizeProductHeights, 250);
+    });
+  })();
 
   // Remove from Custom List
   $(document).on("click", ".cpl-remove", function (e) {
@@ -172,7 +223,7 @@ jQuery(document).ready(function ($) {
             $(this).remove();
           });
         }
-      }
+      },
     );
   });
 });
