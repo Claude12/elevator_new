@@ -161,6 +161,11 @@ function elevator_excerpt_length( $length ) {
 add_filter( 'excerpt_length', 'elevator_excerpt_length', 999 );
 
 /**
+ * Register Custom Navigation Walker — WP Bootstrap Navwalker.
+ */
+require get_template_directory() . '/class-wp-bootstrap-navwalker.php';
+
+/**
  * Enqueue scripts and styles.
  */
 require get_template_directory() . '/inc/enqueue.php';
@@ -203,4 +208,3 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 if ( class_exists( 'WooCommerce' ) ) {
 	require get_template_directory() . '/inc/woocommerce.php';
 }
-

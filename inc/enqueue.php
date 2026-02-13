@@ -1,6 +1,6 @@
 <?php
 /**
- * Enqueue scripts and styles
+ * Enqueue scripts and styles.
  *
  * @package elevator
  */
@@ -9,90 +9,102 @@
  * Enqueue scripts and styles.
  */
 function elevator_scripts() {
-	// Enqueue Bootstrap CSS.
+
+	// --- Vendor CSS (CDN) ---
+
+	// Bootstrap 5.3 CSS.
 	wp_enqueue_style(
 		'elevator-bootstrap',
-		get_template_directory_uri() . '/assets/css/bootstrap.min.css',
+		'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
 		array(),
-		_S_VERSION
+		'5.3.3'
 	);
 
-	// Enqueue Font Awesome.
-	wp_enqueue_style(
-		'elevator-font-awesome',
-		get_template_directory_uri() . '/assets/css/faall.min.css',
-		array(),
-		_S_VERSION
-	);
-
-	// Enqueue Swiper CSS.
+	// Swiper CSS.
 	wp_enqueue_style(
 		'elevator-swiper',
-		get_template_directory_uri() . '/assets/css/swiper-bundle.min.css',
+		'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
 		array(),
-		_S_VERSION
+		'11.0.0'
 	);
 
-	// Enqueue main CSS with filemtime cache-busting.
+	// --- Custom CSS ---
+
+	// Main custom CSS with filemtime cache-busting.
 	$main_css_path    = get_template_directory() . '/assets/css/main.css';
 	$main_css_version = file_exists( $main_css_path ) ? filemtime( $main_css_path ) : _S_VERSION;
 	wp_enqueue_style(
 		'elevator-main',
 		get_template_directory_uri() . '/assets/css/main.css',
-		array(),
+		array( 'elevator-bootstrap' ),
 		$main_css_version
 	);
 
-	// Enqueue theme stylesheet.
-	wp_enqueue_style( 'elevator-style', get_stylesheet_uri(), array(), _S_VERSION );
+	// Theme stylesheet (style.css) — loaded last so it can override everything.
+	wp_enqueue_style(
+		'elevator-style',
+		get_stylesheet_uri(),
+		array( 'elevator-main' ),
+		_S_VERSION
+	);
 	wp_style_add_data( 'elevator-style', 'rtl', 'replace' );
 
-	// Enqueue Bootstrap JS.
+	// --- Vendor JS (CDN) ---
+
+	// Bootstrap 5.3 JS (bundle includes Popper).
 	wp_enqueue_script(
 		'elevator-bootstrap',
-		get_template_directory_uri() . '/assets/js/bootstrap.min.js',
+		'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js',
 		array(),
-		_S_VERSION,
+		'5.3.3',
 		true
 	);
 
-	// Enqueue toggle navigation JS.
-	wp_enqueue_script(
-		'elevator-toggle-navigation',
-		get_template_directory_uri() . '/assets/js/toggle-navigation.js',
-		array(),
-		_S_VERSION,
-		true
-	);
-
-	// Enqueue Swiper JS.
+	// Swiper JS.
 	wp_enqueue_script(
 		'elevator-swiper',
-		get_template_directory_uri() . '/assets/js/swiper-bundle.min.js',
+		'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
 		array(),
-		_S_VERSION,
+		'11.0.0',
 		true
 	);
 
-	// Enqueue main JS with jQuery dependency and filemtime cache-busting.
+	// --- Custom JS ---
+
+	// Toggle navigation (Bootstrap responsive nav helper).
+	$toggle_nav_path = get_template_directory() . '/assets/js/toggle-navigation.js';
+	if ( file_exists( $toggle_nav_path ) ) {
+		wp_enqueue_script(
+			'elevator-toggle-navigation',
+			get_template_directory_uri() . '/assets/js/toggle-navigation.js',
+			array( 'elevator-bootstrap' ),
+			filemtime( $toggle_nav_path ),
+			true
+		);
+	}
+
+	// Main JS with jQuery dependency and filemtime cache-busting.
 	$main_js_path    = get_template_directory() . '/assets/js/main.js';
 	$main_js_version = file_exists( $main_js_path ) ? filemtime( $main_js_path ) : _S_VERSION;
 	wp_enqueue_script(
 		'elevator-main',
 		get_template_directory_uri() . '/assets/js/main.js',
-		array( 'jquery' ),
+		array( 'jquery', 'elevator-bootstrap' ),
 		$main_js_version,
 		true
 	);
 
-	// Enqueue navigation script.
-	wp_enqueue_script(
-		'elevator-navigation',
-		get_template_directory_uri() . '/js/navigation.js',
-		array(),
-		_S_VERSION,
-		true
-	);
+	// Underscores navigation script.
+	$nav_js_path = get_template_directory() . '/js/navigation.js';
+	if ( file_exists( $nav_js_path ) ) {
+		wp_enqueue_script(
+			'elevator-navigation',
+			get_template_directory_uri() . '/js/navigation.js',
+			array(),
+			_S_VERSION,
+			true
+		);
+	}
 
 	// Localize script for AJAX on WooCommerce account/product pages.
 	if ( class_exists( 'WooCommerce' ) && ( is_account_page() || is_product() ) ) {
@@ -101,11 +113,12 @@ function elevator_scripts() {
 			'elevator_ajax',
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'elevator_ajax_nonce' ),
 			)
 		);
 	}
 
-	// Enqueue comment reply script on singular posts/pages with comments.
+	// Comment reply script.
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}

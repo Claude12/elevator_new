@@ -1,8 +1,15 @@
 <?php
-if (is_active_sidebar('primary-sidebar')) : ?>
-    <aside id="sidebar" class="widget-area">
-        <span class="sidebar-wrap">
-        <?php dynamic_sidebar('primary-sidebar'); ?>
-        </span>
-    </aside>
-<?php endif; ?>
+/**
+ * The sidebar containing the main widget area.
+ *
+ * @package elevator
+ */
+
+if ( ! is_active_sidebar( 'sidebar-1' ) ) {
+	return;
+}
+?>
+
+<aside id="secondary" class="widget-area">
+	<?php dynamic_sidebar( 'sidebar-1' ); ?>
+</aside><!-- #secondary -->
