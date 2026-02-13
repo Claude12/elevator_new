@@ -1,0 +1,17 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*.swn
+*.bak
+*~
+
+# Dependencies
+node_modules/
+vendor/
+
+# WordPress
+wp-content/uploads/

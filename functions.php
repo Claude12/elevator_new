@@ -46,10 +46,13 @@ function elevator_setup() {
 		*/
 	add_theme_support( 'post-thumbnails' );
 
-	// This theme uses wp_nav_menu() in one location.
+	// This theme uses wp_nav_menu() in multiple locations.
 	register_nav_menus(
 		array(
-			'menu-1' => esc_html__( 'Primary', 'elevator' ),
+			'primary'        => esc_html__( 'Primary Menu', 'elevator' ),
+			'top'            => esc_html__( 'Top Menu', 'elevator' ),
+			'footer-menu-1'  => esc_html__( 'Footer Menu 1', 'elevator' ),
+			'footer-menu-2'  => esc_html__( 'Footer Menu 2', 'elevator' ),
 		)
 	);
 
@@ -131,23 +134,41 @@ function elevator_widgets_init() {
 			'after_title'   => '</h2>',
 		)
 	);
+
+	register_sidebar(
+		array(
+			'name'          => esc_html__( 'News Sidebar', 'elevator' ),
+			'id'            => 'sidebar-news',
+			'description'   => esc_html__( 'Add widgets here for the news sidebar.', 'elevator' ),
+			'before_widget' => '<section id="%1$s" class="widget %2$s">',
+			'after_widget'  => '</section>',
+			'before_title'  => '<h2 class="widget-title">',
+			'after_title'   => '</h2>',
+		)
+	);
 }
 add_action( 'widgets_init', 'elevator_widgets_init' );
 
 /**
+ * Set excerpt length to 17 words.
+ *
+ * @param int $length Excerpt length.
+ * @return int Modified excerpt length.
+ */
+function elevator_excerpt_length( $length ) {
+	return 17;
+}
+add_filter( 'excerpt_length', 'elevator_excerpt_length', 999 );
+
+/**
  * Enqueue scripts and styles.
  */
-function elevator_scripts() {
-	wp_enqueue_style( 'elevator-style', get_stylesheet_uri(), array(), _S_VERSION );
-	wp_style_add_data( 'elevator-style', 'rtl', 'replace' );
+require get_template_directory() . '/inc/enqueue.php';
 
-	wp_enqueue_script( 'elevator-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
-
-	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
-		wp_enqueue_script( 'comment-reply' );
-	}
-}
-add_action( 'wp_enqueue_scripts', 'elevator_scripts' );
+/**
+ * ACF Options Page.
+ */
+require get_template_directory() . '/inc/acf.php';
 
 /**
  * Implement the Custom Header feature.
@@ -174,5 +195,12 @@ require get_template_directory() . '/inc/customizer.php';
  */
 if ( defined( 'JETPACK__VERSION' ) ) {
 	require get_template_directory() . '/inc/jetpack.php';
+}
+
+/**
+ * Load WooCommerce compatibility file.
+ */
+if ( class_exists( 'WooCommerce' ) ) {
+	require get_template_directory() . '/inc/woocommerce.php';
 }
 
