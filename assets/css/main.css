@@ -1,8 +1,62 @@
+/*============================================
+  TABLE OF CONTENTS
+============================================
+  1. Typography
+  2. General
+  3. Backgrounds
+  4. Header
+  5. Header Navigation
+  6. Footer
+  7. Social Links
+  8. Banner Area
+  9. USP Section
+  10. Category Module
+  11. Whatsapp Block
+  12. Trade Account
+  13. Suppliers Logo
+  14. Social Feed Area
+  15. Devider
+  16. Product Feeds
+  17. Meet The Team
+  18. Quote Module
+  19. Internal Banner
+  20. Breadcrumbs
+  21. Two Col Repeater
+  22. Contact
+  23. Map
+  24. News
+  25. Sitemap
+  26. Quote Function
+  27. Shop Elements
+  28. Responsive Styles
+============================================*/
+
+/*============================================
+  CSS VARIABLES (for future refactoring)
+============================================*/
+:root {
+  /* Color reference — for future refactoring */
+  --color-primary:    #154ed3;
+  --color-dark:       #021338;
+  --color-accent:     #eab27a;
+  --color-grey-bg:    #f2f2f2;
+  --color-text:       #717171;
+  --color-text-dark:  #4d4d4d;
+  --color-white:      #fff;
+  --color-whatsapp:   #25d366;
+  --color-whatsapp-dk:#075e54;
+  --color-danger:     #a00;
+  --color-success:    #6da626;
+
+  --font-heading: "Open Sans", sans-serif;
+  --font-body:    "Poppins", serif;
+}
+
 /*-------------------------------------------
 === Typography
 -------------------------------------------*/
 body {
-  /* 	overflow-x:hidden; */
+  position: relative;
 }
 #entire-content-wrap {
   overflow: hidden;
@@ -52,11 +106,6 @@ h1 {
 }
 h2 {
   font-size: 30px;
-}
-h3 {
-}
-h4. h5,
-h6 {
 }
 
 /*-------------------------------------------
@@ -124,10 +173,6 @@ img {
 /*-------------------------------------------
 === Backgrounds
 -------------------------------------------*/
-body {
-  position: relative;
-}
-
 .bg {
   display: none;
 }
@@ -245,12 +290,6 @@ body {
   opacity: 0.09;
 }
 
-.page-template-about-us .bg-image-1 {
-}
-
-.tax-product_cat {
-}
-
 /* Responsive */
 
 @media (max-width: 769px) {
@@ -278,7 +317,6 @@ body {
 }
 
 .header-contact-area {
-  /*	width:78%;*/
   display: inline-flex;
   align-items: center;
 }
@@ -297,6 +335,8 @@ body {
   color: #fff;
   font-size: 14px;
   min-width: 192px;
+  width: 100%;
+  outline: 0;
 }
 .woo-search .woocommerce-product-search button {
   background: #fff;
@@ -313,25 +353,25 @@ body {
 
 .woo-search .woocommerce-product-search input::-webkit-input-placeholder {
   /* Chrome, Safari, Opera */
-  color: #ffff;
+  color: #fff;
   font-family: "Poppins", serif;
   font-weight: 600;
 }
 .woo-search .woocommerce-product-search input:-ms-input-placeholder {
   /* Internet Explorer 10-11 */
-  color: #ffff;
+  color: #fff;
   font-family: "Poppins", serif;
   font-weight: 600;
 }
 .woo-search .woocommerce-product-search input::-ms-input-placeholder {
   /* Microsoft Edge */
-  color: #ffff;
+  color: #fff;
   font-family: "Poppins", serif;
   font-weight: 600;
 }
 .woo-search .woocommerce-product-search input::placeholder {
   /* Standard syntax */
-  color: #ffff;
+  color: #fff;
   font-family: "Poppins", serif;
   font-weight: 600;
 }
@@ -420,8 +460,6 @@ body {
 .header-cart {
   display: flex;
   align-items: center;
-  /*    display: inline-block;*/
-  /*    width:50%;*/
 }
 
 .cart-link {
@@ -454,8 +492,6 @@ body {
 .quote-button {
   display: flex;
   align-items: center;
-  /*    display: inline-block;*/
-  /*    width:43%;*/
   padding: 0;
   margin-bottom: 0;
 }
@@ -464,18 +500,13 @@ body {
 }
 
 .quote-button li a {
+  background: #154ed3;
+  border-radius: 50px;
   color: #fff;
   font-family: "Open Sans", sans-serif;
   font-weight: 800;
   text-transform: uppercase;
-  font-size: 14px;
   text-decoration: none;
-}
-
-.quote-button li a {
-  background: #154ed3;
-  border-radius: 50px;
-  color: #fff;
   width: 50px;
   height: 50px;
   text-align: center;
@@ -520,9 +551,8 @@ body {
     min-width: 169px !important;
     font-size: 12px;
   }
-} /*  Close of query 1400  */
-
-@media (max-width: 1200px) {
+  
+  /* Second block rules override above where needed */
   #header .header__logo-wrapper {
     max-width: 110px;
   }
@@ -561,6 +591,7 @@ body {
   #header .header-basket {
     width: 58%;
     float: left;
+    justify-content: center;
   }
   .header-phone,
   .header-message {
@@ -571,23 +602,18 @@ body {
   }
 } /*  Close of query 994  */
 
-@media (max-width: 769px) {
-} /*  Close of query 769  */
-
 @media (max-width: 600px) {
   #header.sticky-top {
     padding-top: 0rem !important;
   }
   #header .container .d-flex {
+    display: flex !important;
   }
   #header .header-contact-area {
     width: 100%;
   }
   #header .header__logo-wrapper {
     max-width: 100%;
-  }
-  #header .header-login,
-  #header .header-basket {
   }
 } /*  Close of query  */
 
@@ -820,7 +846,6 @@ footer .add-info-wrapper p a:hover {
 -------------------------------------------*/
 #hero-banner {
   background: #154ed3;
-  /*	padding:50px 0;*/
 }
 
 #hero-banner .banner-area .row {
@@ -911,8 +936,6 @@ footer .add-info-wrapper p a:hover {
 .banner-area .banner-buttons {
   margin-top: 20px;
 }
-.banner-area .banner-buttons .whatsapp {
-}
 .banner-area .banner-buttons img {
   display: inline-block;
   max-width: 200px;
@@ -976,9 +999,6 @@ footer .add-info-wrapper p a:hover {
 
 .banner-area .swiper-slide {
   padding: 5px;
-}
-
-.banner-area .slider-title {
 }
 
 /*  Banner Image  */
@@ -1110,18 +1130,10 @@ footer .add-info-wrapper p a:hover {
 === Category Module
 -------------------------------------------*/
 
-#category-module {
-}
 #category-module .top-row {
   float: left;
   width: 100%;
   margin-bottom: 20px;
-}
-#category-module .bottom-row {
-}
-#category-module .top-cats a,
-#category-module .bottom-cats a {
-  display: block;
 }
 #category-module .cat-list {
   padding: 0;
@@ -1376,8 +1388,6 @@ footer .add-info-wrapper p a:hover {
 === Suppliers Logo
 -------------------------------------------*/
 
-#suppliers-logo {
-}
 #suppliers-logo ul {
   padding: 0;
 }
@@ -1695,8 +1705,6 @@ footer .add-info-wrapper p a:hover {
 === Breadcrumbs
 -------------------------------------------*/
 
-.breadcrumbs {
-}
 .rank-math-breadcrumb p {
   font-family: "Poppins", serif;
   font-weight: 400;
@@ -1715,8 +1723,6 @@ footer .add-info-wrapper p a:hover {
 === Two Col Repeater
 -------------------------------------------*/
 
-#fifty-repeater-container strong {
-}
 #fifty-repeater-container p {
   width: 97%;
 }
@@ -1832,8 +1838,6 @@ footer .add-info-wrapper p a:hover {
 === Map
 -------------------------------------------*/
 
-#map-module {
-}
 #map-module iframe {
   width: 100%;
 }
@@ -2255,7 +2259,7 @@ footer .add-info-wrapper p a:hover {
 #sidebar ul li a {
   text-decoration: none;
   color: #4d4d4d;
-  text-transformation: uppercase;
+  text-transform: uppercase;
 }
 #sidebar ul li a:hover {
   text-decoration: underline;
@@ -2291,8 +2295,6 @@ footer .add-info-wrapper p a:hover {
   margin: 20px 0;
 }
 
-.product-template-default .product .summary .product_meta {
-}
 .product-template-default .product .summary .product_meta .sku_wrapper {
   font-family: "Open Sans", sans-serif;
   font-weight: 800;
@@ -2395,7 +2397,7 @@ footer .add-info-wrapper p a:hover {
 .woocommerce-product-rating .woocommerce-review-link {
   font-size: 16px;
   color: #021338;
-  ont-family: "Poppins", serif;
+  font-family: "Poppins", serif;
 }
 .woocommerce-product-rating .woocommerce-review-link:hover {
   color: #154ed3;
@@ -2442,7 +2444,7 @@ footer .add-info-wrapper p a:hover {
   border: 1px solid #e5e3e8 !important;
 }
 .woocommerce-tabs ul li.active {
-  background-color: #ffff !important;
+  background-color: #fff !important;
 }
 .woocommerce-tabs ul li a {
   font-weight: 600 !important;
@@ -2767,68 +2769,6 @@ footer .add-info-wrapper p a:hover {
   font-weight: 900 !important;
   content: "\f1c1" !important;
 }
-
-/* Editing CSS Starts */
-
-/* CSS Changes Files start */
-#header .header__logo-wrapper a img {
-  width: auto;
-  height: 90px;
-}
-.banner-area .container .banner-image img {
-  max-width: 730px;
-}
-.banner-area::before {
-  content: "";
-  position: absolute;
-  right: 0%;
-  border-right: 0px solid transparent;
-  width: 353px;
-  height: 400px;
-  bottom: 0;
-  z-index: 0;
-  background: linear-gradient(270deg, #154ed3 0%, #eab27a 68%);
-  clip-path: polygon(0% 100%, 100% 0%, 133% 85%);
-  z-index: 0;
-}
-.woo-search .woocommerce-product-search input {
-  width: 100%;
-  outline: 0;
-}
-.woo-search .woocommerce-product-search button {
-  border-radius: 0 17px 17px 0;
-}
-.woo-search .woocommerce-product-search input::-webkit-input-placeholder {
-  font-weight: 600;
-}
-.header-login {
-  border: none !important;
-  border-radius: 0;
-}
-.header-login {
-  border: 2px solid #fff;
-  border-radius: 20px;
-}
-@media only screen and (max-width: 1200px) {
-  .woo-search .woocommerce-product-search input {
-  }
-  .header-basket .header-cart a span {
-    font-size: 10px;
-  }
-}
-@media only screen and (max-width: 994px) {
-  #header .header-basket {
-    width: 58%;
-    justify-content: center;
-  }
-}
-@media only screen and (max-width: 600px) {
-  #header .container .d-flex {
-    display: flex !important;
-  }
-}
-
-/* CSS Changes Files End */
 
 .woo-search {
   min-width: auto;
@@ -3943,11 +3883,9 @@ section.breadcrumbs.py-3 {
   max-width: 55%;
 }
 .single-product .bg-image-1 {
-  /*	top: 58%;*/
   top: 35%;
   right: 0%;
   opacity: 0.1;
-  /*    max-width: 50%;*/
   max-width: 40%;
 }
 .single-product .bg-image-3 {
@@ -3958,10 +3896,8 @@ section.breadcrumbs.py-3 {
   z-index: -2;
 }
 .single-product .bg-strip-2 {
-  /*	top: 67%;*/
   bottom: 21%;
   left: 0;
-  /*    max-width: 34%;*/
   max-width: 18%;
 }
 .single-product .bg-strip-1,
