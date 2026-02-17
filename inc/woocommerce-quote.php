@@ -68,7 +68,9 @@ function elevator_add_continue_shopping_before_update_quote() {
 	});
 	";
 
-	wp_add_inline_script( 'jquery', $script );
+	// Attach to elevator-main-js if available, otherwise use jquery-core.
+	$handle = wp_script_is( 'elevator-main-js', 'registered' ) ? 'elevator-main-js' : 'jquery-core';
+	wp_add_inline_script( $handle, $script );
 }
 add_action( 'wp_enqueue_scripts', 'elevator_add_continue_shopping_before_update_quote' );
 
@@ -97,7 +99,9 @@ function elevator_terms_link_update_quote() {
 	});
 	";
 
-	wp_add_inline_script( 'jquery', $script );
+	// Attach to elevator-main-js if available, otherwise use jquery-core.
+	$handle = wp_script_is( 'elevator-main-js', 'registered' ) ? 'elevator-main-js' : 'jquery-core';
+	wp_add_inline_script( $handle, $script );
 }
 add_action( 'wp_enqueue_scripts', 'elevator_terms_link_update_quote' );
 

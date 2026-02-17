@@ -81,12 +81,12 @@ function elevator_add_custom_tooltip_script() {
 		});
 	';
 
-	// Use wp_add_inline_script if elevator-main-js is enqueued, otherwise output directly.
-	if ( wp_script_is( 'elevator-main-js', 'enqueued' ) ) {
+	// Use wp_add_inline_script if elevator-main-js is registered.
+	if ( wp_script_is( 'elevator-main-js', 'registered' ) ) {
 		wp_add_inline_script( 'elevator-main-js', $script );
 	} else {
 		// Fallback to direct output if script not available.
-		echo '<script>' . $script . '</script>';
+		echo '<script>' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 }
 add_action( 'wp_footer', 'elevator_add_custom_tooltip_script' );

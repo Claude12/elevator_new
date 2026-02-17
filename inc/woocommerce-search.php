@@ -55,10 +55,15 @@ function elevator_search_taxonomy_join( $join, $q ) {
 
 	global $wpdb;
 
-	// Add taxonomy joins only if not already present.
+	// Check if our custom joins are already present by looking for our specific aliases.
+	// Using unique aliases prevents conflicts with other code.
 	if ( strpos( $join, 'etr_tax_search' ) === false ) {
 		$join .= " LEFT JOIN {$wpdb->term_relationships} AS etr_tax_search ON ({$wpdb->posts}.ID = etr_tax_search.object_id)";
+	}
+	if ( strpos( $join, 'ett_tax_search' ) === false ) {
 		$join .= " LEFT JOIN {$wpdb->term_taxonomy} AS ett_tax_search ON (etr_tax_search.term_taxonomy_id = ett_tax_search.term_taxonomy_id AND ett_tax_search.taxonomy IN ('product_cat','product_tag','product_brand'))";
+	}
+	if ( strpos( $join, 'et_tax_search' ) === false ) {
 		$join .= " LEFT JOIN {$wpdb->terms} AS et_tax_search ON (ett_tax_search.term_id = et_tax_search.term_id)";
 	}
 

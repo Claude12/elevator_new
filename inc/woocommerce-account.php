@@ -74,7 +74,8 @@ function elevator_handle_print_order_page() {
 		$order_id = intval( $_GET['print-order'] );
 
 		// Security: verify nonce.
-		if ( ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( $_GET['_wpnonce'], 'elevator_print_order_' . $order_id ) ) {
+		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'elevator_print_order_' . $order_id ) ) {
 			wp_die( esc_html__( 'Security check failed.', 'elevator' ) );
 		}
 
