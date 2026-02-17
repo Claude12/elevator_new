@@ -10,104 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Front-end product search: include taxonomies using posts_join and posts_where.
- *
- * @param WP_Query $q Query object.
- */
-function elevator_search_include_taxonomies( $q ) {
-	if ( is_admin() || ! $q->is_main_query() || ! $q->is_search() ) {
-		return;
-	}
-
-	// Only affect product searches.
-	$pt = $q->get( 'post_type' );
-	if ( ! ( $pt === 'product' || ( is_array( $pt ) && in_array( 'product', (array) $pt, true ) ) ) ) {
-		return;
-	}
-
-	$term = trim( (string) $q->get( 's' ) );
-	if ( $term === '' ) {
-		return;
-	}
-
-	// Store the search term for use in filters.
-	$q->set( 'elevator_tax_search_term', $term );
-}
-add_action( 'pre_get_posts', 'elevator_search_include_taxonomies', 9 );
-
-/**
- * Join taxonomy tables for product search.
- *
- * @param string   $join Join clause.
- * @param WP_Query $q    Query object.
- * @return string Modified join clause.
- */
-function elevator_search_taxonomy_join( $join, $q ) {
-	if (
-		! $q->is_main_query() ||
-		! $q->is_search() ||
-		! ( $q->get( 'post_type' ) === 'product' ||
-			( is_array( $q->get( 'post_type' ) ) && in_array( 'product', (array) $q->get( 'post_type' ), true ) ) ) ||
-		! $q->get( 'elevator_tax_search_term' )
-	) {
-		return $join;
-	}
-
-	global $wpdb;
-
-	// Check if our custom joins are already present by looking for our specific aliases.
-	// Using unique aliases prevents conflicts with other code.
-	if ( strpos( $join, 'etr_tax_search' ) === false ) {
-		$join .= " LEFT JOIN {$wpdb->term_relationships} AS etr_tax_search ON ({$wpdb->posts}.ID = etr_tax_search.object_id)";
-	}
-	if ( strpos( $join, 'ett_tax_search' ) === false ) {
-		$join .= " LEFT JOIN {$wpdb->term_taxonomy} AS ett_tax_search ON (etr_tax_search.term_taxonomy_id = ett_tax_search.term_taxonomy_id AND ett_tax_search.taxonomy IN ('product_cat','product_tag','product_brand'))";
-	}
-	if ( strpos( $join, 'et_tax_search' ) === false ) {
-		$join .= " LEFT JOIN {$wpdb->terms} AS et_tax_search ON (ett_tax_search.term_id = et_tax_search.term_id)";
-	}
-
-	return $join;
-}
-add_filter( 'posts_join', 'elevator_search_taxonomy_join', 10, 2 );
-
-/**
- * Add taxonomy name match to WHERE clause for product search.
- *
- * @param string   $where Where clause.
- * @param WP_Query $q     Query object.
- * @return string Modified where clause.
- */
-function elevator_search_taxonomy_where( $where, $q ) {
-	if (
-		! $q->is_main_query() ||
-		! $q->is_search() ||
-		! ( $q->get( 'post_type' ) === 'product' ||
-			( is_array( $q->get( 'post_type' ) ) && in_array( 'product', (array) $q->get( 'post_type' ), true ) ) ) ||
-		! $q->get( 'elevator_tax_search_term' )
-	) {
-		return $where;
-	}
-
-	global $wpdb;
-	$term = $q->get( 'elevator_tax_search_term' );
-	$like = '%' . $wpdb->esc_like( $term ) . '%';
-
-	// Inject OR condition for taxonomy name match before the last closing parenthesis.
-	if ( $where && strpos( $where, ')' ) !== false ) {
-		$where = preg_replace(
-			'/\)\s*$/',
-			$wpdb->prepare( ' OR et_tax_search.name LIKE %s)', $like ),
-			$where,
-			1
-		);
-	}
-
-	return $where;
-}
-add_filter( 'posts_where', 'elevator_search_taxonomy_where', 10, 2 );
-
-/**
  * WooCommerce product data store search: include SKU and brand_name meta.
  *
  * @param string $sql    Search SQL.
@@ -154,6 +56,7 @@ add_filter( 'woocommerce_product_data_store_cpt_get_search_sql', 'elevator_wooco
  */
 function elevator_search_join_oem_meta( $join, $q ) {
 	if (
+		is_admin() &&
 		$q->is_main_query() &&
 		$q->is_search() &&
 		(
@@ -182,6 +85,7 @@ add_filter( 'posts_join', 'elevator_search_join_oem_meta', 10, 2 );
  */
 function elevator_search_include_oem( $search, $q ) {
 	if (
+		! is_admin() ||
 		! $q->is_main_query() ||
 		! $q->is_search() ||
 		! ( $q->get( 'post_type' ) === 'product' ||
@@ -221,6 +125,7 @@ add_filter( 'posts_search', 'elevator_search_include_oem', 10, 2 );
  */
 function elevator_search_posts_distinct( $distinct, $q ) {
 	if (
+		is_admin() &&
 		$q->is_main_query() &&
 		$q->is_search() &&
 		( $q->get( 'post_type' ) === 'product' ||
@@ -233,7 +138,7 @@ function elevator_search_posts_distinct( $distinct, $q ) {
 add_filter( 'posts_distinct', 'elevator_search_posts_distinct', 10, 2 );
 
 /**
- * Custom order: High Priority > Total Sales > SKU > Title.
+ * Custom order: High Priority > Title (frontend only).
  *
  * @param string   $orderby Orderby clause.
  * @param WP_Query $q       Query object.
@@ -242,11 +147,9 @@ add_filter( 'posts_distinct', 'elevator_search_posts_distinct', 10, 2 );
 function elevator_search_custom_orderby( $orderby, $q ) {
 	global $wpdb;
 
-	if ( $q->is_search() && $q->is_main_query() && is_post_type_archive( 'product' ) ) {
+	if ( ! is_admin() && $q->is_search() && $q->is_main_query() && is_post_type_archive( 'product' ) ) {
 		$orderby = "
 			(SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = {$wpdb->posts}.ID AND meta_key = 'high_priority_search')+0 DESC,
-			(SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = {$wpdb->posts}.ID AND meta_key = 'total_sales')+0 DESC,
-			(SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = {$wpdb->posts}.ID AND meta_key = '_sku') ASC,
 			{$wpdb->posts}.post_title ASC
 		";
 	}
@@ -320,31 +223,3 @@ function elevator_admin_search_orderby( $orderby, $q ) {
 	return $orderby;
 }
 add_filter( 'posts_orderby', 'elevator_admin_search_orderby', 10, 2 );
-
-/**
- * Boost featured products in search results.
- *
- * @param WP_Query $query Query object.
- */
-function elevator_boost_featured_products_in_search( $query ) {
-	if ( ! is_admin() && $query->is_main_query() && $query->is_search() && is_woocommerce() ) {
-		$query->set(
-			'meta_query',
-			array(
-				'relation' => 'OR',
-				array(
-					'key'     => '_featured',
-					'value'   => 'yes',
-					'compare' => '=',
-				),
-				array(
-					'key'     => '_featured',
-					'compare' => 'NOT EXISTS',
-				),
-			)
-		);
-		$query->set( 'orderby', 'meta_value' );
-		$query->set( 'order', 'DESC' );
-	}
-}
-add_action( 'pre_get_posts', 'elevator_boost_featured_products_in_search' );
