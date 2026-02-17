@@ -10,6 +10,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
+ * Remove short description from its default position in product summary.
+ */
+remove_action( 'woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20 );
+
+/**
  * Add custom product tabs.
  *
  * @param array $tabs Product tabs.

@@ -151,20 +151,20 @@ function elevator_woo_mcl_variable_product_field() {
 				}
 			}
 
-			document.addEventListener('found_variation', function(e) {
-				var v = e && e.detail ? e.detail : null;
-				if (!v || !('variation_id' in v)) {
+			// Use jQuery events instead of native DOM events for WooCommerce compatibility.
+			jQuery(document).on('found_variation', '.variations_form', function(e, variation) {
+				if (!variation || !('variation_id' in variation)) {
 					hideField();
 					return;
 				}
 
-				var vid = String(v.variation_id);
+				var vid = String(variation.variation_id);
 				var max = (vid in map) ? parseFloat(map[vid]) : 0;
 
 				(max > 0) ? showField(max) : hideField();
 			});
 
-			document.addEventListener('reset_data', function() {
+			jQuery(document).on('reset_data', '.variations_form', function() {
 				hideField();
 			});
 		})();

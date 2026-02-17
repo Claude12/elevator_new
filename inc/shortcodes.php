@@ -48,7 +48,6 @@ function elevator_product_slider_shortcode( $atts ) {
 				<?php
 				while ( $query->have_posts() ) :
 					$query->the_post();
-					global $product;
 					?>
 					<div class="swiper-slide">
 						<a href="<?php the_permalink(); ?>">
