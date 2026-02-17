@@ -68,9 +68,19 @@ function elevator_add_continue_shopping_before_update_quote() {
 	});
 	";
 
-	// Attach to elevator-main-js if available, otherwise use jquery-core.
-	$handle = wp_script_is( 'elevator-main-js', 'registered' ) ? 'elevator-main-js' : 'jquery-core';
-	wp_add_inline_script( $handle, $script );
+	// Attach to elevator-main-js if available, otherwise output in footer.
+	if ( wp_script_is( 'elevator-main-js', 'registered' ) ) {
+		wp_add_inline_script( 'elevator-main-js', $script );
+	} else {
+		// Fallback: add to wp_footer with jQuery dependency.
+		add_action(
+			'wp_footer',
+			function() use ( $script ) {
+				echo '<script>' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			},
+			20
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'elevator_add_continue_shopping_before_update_quote' );
 
@@ -99,9 +109,19 @@ function elevator_terms_link_update_quote() {
 	});
 	";
 
-	// Attach to elevator-main-js if available, otherwise use jquery-core.
-	$handle = wp_script_is( 'elevator-main-js', 'registered' ) ? 'elevator-main-js' : 'jquery-core';
-	wp_add_inline_script( $handle, $script );
+	// Attach to elevator-main-js if available, otherwise output in footer.
+	if ( wp_script_is( 'elevator-main-js', 'registered' ) ) {
+		wp_add_inline_script( 'elevator-main-js', $script );
+	} else {
+		// Fallback: add to wp_footer with jQuery dependency.
+		add_action(
+			'wp_footer',
+			function() use ( $script ) {
+				echo '<script>' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			},
+			20
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'elevator_terms_link_update_quote' );
 

@@ -99,16 +99,19 @@ add_filter( 'term_description', 'do_shortcode' );
 /**
  * Allow more HTML tags in taxonomy description.
  *
+ * Note: This function is hooked to multiple taxonomy edit actions:
+ * edited_category, edited_post_tag, edited_product_cat, edited_product_tag.
+ * These actions fire after WordPress has already verified the nonce in
+ * wp-admin/edit-tags.php, so we only need to check capabilities here.
+ *
  * @param int $term_id Term ID.
  */
 function elevator_allow_html_in_taxonomy_description( $term_id ) {
-	// Note: The 'edited_category' action fires after WordPress has already verified
-	// the nonce in wp-admin/edit-tags.php, so we only need to check capabilities here.
 	if ( ! current_user_can( 'manage_categories' ) ) {
 		return;
 	}
 
-	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified by WordPress core in edit-tags.php before this action fires.
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified by WordPress core in edit-tags.php before taxonomy edit actions fire.
 	if ( isset( $_POST['description'] ) ) {
 		// Define allowed HTML tags.
 		$allowed_html = array(
