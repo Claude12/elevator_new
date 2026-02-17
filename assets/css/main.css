@@ -5330,6 +5330,23 @@ form.woocommerce-ordering select.orderby {
   }
 }
 
+/* My Account Section */
+.account-branding {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.account-branding img {
+  width: 100px;
+  height: auto;
+  object-fit: contain;
+}
+
+.account-branding h2 {
+  margin: 0;
+}
+
 /*.product-videos-wrapper .product-video {
   width:100%;
   float:left;

@@ -43,7 +43,7 @@ if ( function_exists( 'get_field' ) ) {
 		<?php if ( $company_logo && is_array( $company_logo ) ) : ?>
 			<img src="<?php echo esc_url( $company_logo['url'] ); ?>"
 				alt="<?php echo esc_attr( $company_name ?: '' ); ?>"
-				class="account-branding__logo" />
+				class="account-branding__logo" width="100" height="100" />
 		<?php endif; ?>
 		<?php if ( $company_name ) : ?>
 			<h2 class="account-branding__name"><?php echo esc_html( $company_name ); ?></h2>
