@@ -64,21 +64,20 @@ function elevator_guest_add_login_notice_on_single_product() {
 		<?php
 	}
 }
-add_action( 'woocommerce_single_product_summary', 'elevator_guest_add_login_notice_on_single_product', 30 );
+add_action( 'woocommerce_single_product_summary', 'elevator_guest_add_login_notice_on_single_product', 31 );
 
 /**
  * Hide "Add to Quote" button for logged-out users (Addify B2B plugin).
  */
 function elevator_guest_hide_add_to_quote_button() {
 	if ( ! is_user_logged_in() ) {
-		?>
-		<style>
+		$custom_css = '
 			.afpq-add-to-quote-button,
 			.afpq-quote-button {
 				display: none !important;
 			}
-		</style>
-		<?php
+		';
+		wp_add_inline_style( 'elevator-style', $custom_css );
 	}
 }
-add_action( 'wp_head', 'elevator_guest_hide_add_to_quote_button' );
+add_action( 'wp_enqueue_scripts', 'elevator_guest_hide_add_to_quote_button' );
