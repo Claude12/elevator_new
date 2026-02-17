@@ -10,7 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * WooCommerce product data store search: include SKU and brand_name meta.
+ * WooCommerce product data store search: include SKU, brand_name, and oem_number meta.
+ *
+ * Searches the following fields:
+ * - _sku (WooCommerce SKU)
+ * - brand_name (Brand meta field)
+ * - oem_number (ACF field under "Supplier Information – Products" group)
  *
  * @param string $sql    Search SQL.
  * @param string $search Search term.
@@ -21,14 +26,18 @@ function elevator_woocommerce_search_meta( $sql, $search, $sql_where ) {
 	global $wpdb;
 
 	if ( ! empty( $search ) ) {
-		// Extra conditions for SKU and brand_name.
-		$sku_sql   = $wpdb->prepare( ' OR sku_meta.meta_value LIKE %s', '%' . $wpdb->esc_like( $search ) . '%' );
-		$brand_sql = $wpdb->prepare( ' OR brand_meta.meta_value LIKE %s', '%' . $wpdb->esc_like( $search ) . '%' );
+		// Build LIKE pattern once for consistency.
+		$like = '%' . $wpdb->esc_like( $search ) . '%';
+
+		// Extra conditions for SKU, brand_name, and oem_number.
+		$sku_sql   = $wpdb->prepare( ' OR sku_meta.meta_value LIKE %s', $like );
+		$brand_sql = $wpdb->prepare( ' OR brand_meta.meta_value LIKE %s', $like );
+		$oem_sql   = $wpdb->prepare( ' OR oem_meta.meta_value LIKE %s', $like );
 
 		// Append conditions to WooCommerce search SQL.
-		$sql .= $sku_sql . $brand_sql;
+		$sql .= $sku_sql . $brand_sql . $oem_sql;
 
-		// Join meta tables for SKU and brand_name.
+		// Join meta tables for SKU, brand_name, and oem_number.
 		add_filter(
 			'posts_join',
 			function( $join_sql ) use ( $wpdb ) {
@@ -38,7 +47,18 @@ function elevator_woocommerce_search_meta( $sql, $search, $sql_where ) {
 				if ( strpos( $join_sql, 'brand_meta' ) === false ) {
 					$join_sql .= " LEFT JOIN {$wpdb->postmeta} AS brand_meta ON ({$wpdb->posts}.ID = brand_meta.post_id AND brand_meta.meta_key = 'brand_name')";
 				}
+				if ( strpos( $join_sql, 'oem_meta' ) === false ) {
+					$join_sql .= " LEFT JOIN {$wpdb->postmeta} AS oem_meta ON ({$wpdb->posts}.ID = oem_meta.post_id AND oem_meta.meta_key = 'oem_number')";
+				}
 				return $join_sql;
+			}
+		);
+
+		// Add DISTINCT to avoid duplicate rows due to extra LEFT JOINs.
+		add_filter(
+			'posts_distinct',
+			function( $distinct ) {
+				return 'DISTINCT';
 			}
 		);
 	}
@@ -46,75 +66,6 @@ function elevator_woocommerce_search_meta( $sql, $search, $sql_where ) {
 	return $sql;
 }
 add_filter( 'woocommerce_product_data_store_cpt_get_search_sql', 'elevator_woocommerce_search_meta', 10, 3 );
-
-/**
- * Join postmeta for oem_number when searching products.
- *
- * @param string   $join Join clause.
- * @param WP_Query $q    Query object.
- * @return string Modified join clause.
- */
-function elevator_search_join_oem_meta( $join, $q ) {
-	if (
-		is_admin() &&
-		$q->is_main_query() &&
-		$q->is_search() &&
-		(
-			$q->get( 'post_type' ) === 'product' ||
-			( is_array( $q->get( 'post_type' ) ) && in_array( 'product', (array) $q->get( 'post_type' ), true ) )
-		)
-	) {
-		global $wpdb;
-		// Add only if not already joined.
-		if ( strpos( $join, 'oem_meta' ) === false ) {
-			$join .= " LEFT JOIN {$wpdb->postmeta} AS oem_meta
-					   ON ({$wpdb->posts}.ID = oem_meta.post_id
-					   AND oem_meta.meta_key = 'oem_number')";
-		}
-	}
-	return $join;
-}
-add_filter( 'posts_join', 'elevator_search_join_oem_meta', 10, 2 );
-
-/**
- * Add OEM match into core search WHERE clause.
- *
- * @param string   $search Search clause.
- * @param WP_Query $q      Query object.
- * @return string Modified search clause.
- */
-function elevator_search_include_oem( $search, $q ) {
-	if (
-		! is_admin() ||
-		! $q->is_main_query() ||
-		! $q->is_search() ||
-		! ( $q->get( 'post_type' ) === 'product' ||
-			( is_array( $q->get( 'post_type' ) ) && in_array( 'product', (array) $q->get( 'post_type' ), true ) ) )
-	) {
-		return $search;
-	}
-
-	$s = $q->get( 's' );
-	if ( $s === '' || $s === null ) {
-		return $search;
-	}
-
-	global $wpdb;
-	$like = '%' . $wpdb->esc_like( $s ) . '%';
-
-	// Inject OR (oem_meta.meta_value LIKE '%...%') before the last closing parenthesis.
-	if ( $search && strpos( $search, ')' ) !== false ) {
-		$search = preg_replace(
-			'/\)\s*$/',
-			$wpdb->prepare( ' OR (oem_meta.meta_value LIKE %s))', $like ),
-			$search,
-			1
-		);
-	}
-
-	return $search;
-}
-add_filter( 'posts_search', 'elevator_search_include_oem', 10, 2 );
 
 /**
  * Avoid duplicate rows due to extra LEFT JOINs.
