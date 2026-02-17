@@ -12,6 +12,12 @@
  * @package elevator
  */
 
+// If this is a WooCommerce page (Cart, Checkout, My Account), use singular template.
+if ( function_exists( 'is_cart' ) && ( is_cart() || is_checkout() || is_account_page() ) ) {
+	get_template_part( 'singular' );
+	return;
+}
+
 get_header();
 ?>
 

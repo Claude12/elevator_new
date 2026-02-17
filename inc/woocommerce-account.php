@@ -10,38 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Register custom My Account endpoint.
- */
-function elevator_custom_my_account_endpoint() {
-	add_rewrite_endpoint( 'custom-products', EP_ROOT | EP_PAGES );
-}
-add_action( 'init', 'elevator_custom_my_account_endpoint' );
-
-/**
- * Add custom query vars.
- *
- * @param array $vars Query vars.
- * @return array Modified query vars.
- */
-function elevator_custom_query_vars( $vars ) {
-	$vars[] = 'custom-products';
-	return $vars;
-}
-add_filter( 'query_vars', 'elevator_custom_query_vars' );
-
-/**
- * Add "My Product List" link to My Account menu.
- *
- * @param array $items Menu items.
- * @return array Modified menu items.
- */
-function elevator_add_custom_products_link_my_account( $items ) {
-	$items['custom-products'] = __( 'My Product List', 'elevator' );
-	return $items;
-}
-add_filter( 'woocommerce_account_menu_items', 'elevator_add_custom_products_link_my_account' );
-
-/**
  * Print Order button on order details page.
  *
  * @param WC_Order $order Order object.
@@ -129,38 +97,42 @@ add_action( 'woocommerce_order_details_after_order_table', 'elevator_add_repeat_
  * Handle repeat order.
  */
 function elevator_handle_repeat_order() {
-	if ( isset( $_GET['repeat_order'] ) ) {
-		$order_id = absint( $_GET['repeat_order'] );
-
-		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'repeat_order_' . $order_id ) ) {
-			wp_die( esc_html__( 'Security check failed.', 'elevator' ) );
-		}
-
-		$order = wc_get_order( $order_id );
-
-		if ( ! $order || ! current_user_can( 'view_order', $order_id ) ) {
-			wp_die( esc_html__( 'Invalid order.', 'elevator' ) );
-		}
-
-		// Empty current cart.
-		WC()->cart->empty_cart();
-
-		// Loop through order items and add them back to cart.
-		foreach ( $order->get_items() as $item ) {
-			$product_id = $item->get_product_id();
-			$quantity   = $item->get_quantity();
-
-			// Add product to cart (check if still exists & purchasable).
-			$product = wc_get_product( $product_id );
-			if ( $product && $product->is_purchasable() ) {
-				WC()->cart->add_to_cart( $product_id, $quantity );
-			}
-		}
-
-		// Redirect to cart page.
-		wp_safe_redirect( wc_get_cart_url() );
-		exit;
+	if ( ! isset( $_GET['repeat_order'] ) ) {
+		return;
 	}
+
+	$order_id = absint( $_GET['repeat_order'] );
+	$nonce    = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+
+	if ( ! wp_verify_nonce( $nonce, 'repeat_order_' . $order_id ) ) {
+		wp_die( esc_html__( 'Security check failed.', 'elevator' ) );
+	}
+
+	$order = wc_get_order( $order_id );
+
+	if ( ! $order || ! current_user_can( 'view_order', $order_id ) ) {
+		wp_die( esc_html__( 'Invalid order.', 'elevator' ) );
+	}
+
+	// Ensure WooCommerce cart is loaded.
+	if ( is_null( WC()->cart ) ) {
+		wc_load_cart();
+	}
+
+	WC()->cart->empty_cart();
+
+	foreach ( $order->get_items() as $item ) {
+		$product_id = $item->get_product_id();
+		$quantity   = $item->get_quantity();
+
+		$product = wc_get_product( $product_id );
+		if ( $product && $product->is_purchasable() && $product->is_in_stock() ) {
+			WC()->cart->add_to_cart( $product_id, $quantity );
+		}
+	}
+
+	wp_safe_redirect( wc_get_cart_url() );
+	exit;
 }
 add_action( 'template_redirect', 'elevator_handle_repeat_order' );
 

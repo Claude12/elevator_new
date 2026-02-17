@@ -68,6 +68,7 @@ $term      = get_queried_object();
 <section class="container-fluid product-category-main-wrap py-5 px-0">
 	<div class="container">
 		<div class="row product-category-row">
+			<div id="primary">
 			<?php
 			/**
 			 * Hook: woocommerce_before_main_content.
@@ -136,7 +137,10 @@ $term      = get_queried_object();
 			 * @hooked woocommerce_output_content_wrapper_end - 10 (outputs closing divs for the content)
 			 */
 			do_action( 'woocommerce_after_main_content' );
+			?>
+			</div>
 
+			<?php
 			/**
 			 * Hook: woocommerce_sidebar.
 			 *
