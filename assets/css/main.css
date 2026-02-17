@@ -36,20 +36,20 @@
 ============================================*/
 :root {
   /* Color reference — for future refactoring */
-  --color-primary:    #154ed3;
-  --color-dark:       #021338;
-  --color-accent:     #eab27a;
-  --color-grey-bg:    #f2f2f2;
-  --color-text:       #717171;
-  --color-text-dark:  #4d4d4d;
-  --color-white:      #fff;
-  --color-whatsapp:   #25d366;
-  --color-whatsapp-dk:#075e54;
-  --color-danger:     #a00;
-  --color-success:    #6da626;
+  --color-primary: #154ed3;
+  --color-dark: #021338;
+  --color-accent: #eab27a;
+  --color-grey-bg: #f2f2f2;
+  --color-text: #717171;
+  --color-text-dark: #4d4d4d;
+  --color-white: #fff;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-dk: #075e54;
+  --color-danger: #a00;
+  --color-success: #6da626;
 
   --font-heading: "Open Sans", sans-serif;
-  --font-body:    "Poppins", sans-serif;
+  --font-body: "Poppins", sans-serif;
 }
 
 /*-------------------------------------------
@@ -2838,7 +2838,9 @@ footer .add-info-wrapper p a:hover {
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+  transition:
+    opacity 0.2s ease-in-out,
+    visibility 0.2s;
   z-index: 10;
   pointer-events: none;
   font-weight: normal;
@@ -2860,7 +2862,9 @@ footer .add-info-wrapper p a:hover {
   border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.2s ease-in-out, visibility 0.2s;
+  transition:
+    opacity 0.2s ease-in-out,
+    visibility 0.2s;
 }
 
 .tooltips:hover::before {
@@ -5345,6 +5349,26 @@ form.woocommerce-ordering select.orderby {
 
 .account-branding h2 {
   margin: 0;
+}
+
+/* Quotes page */
+.adf-request-quote-page.template_one {
+  margin: auto;
+}
+
+body:not(.logged-in) .woocommerce .product-price,
+body:not(.logged-in) .woocommerce .product-subtotal,
+body:not(.logged-in) .woocommerce .woocommerce-Price-amount,
+body:not(.logged-in) .woocommerce .cart-subtotal,
+body:not(.logged-in) .woocommerce .order-total,
+body:not(.logged-in) .woocommerce .tax-rate,
+body:not(.logged-in) .woocommerce .offered-price,
+body:not(.logged-in) .woocommerce .offered-price-input,
+body:not(.logged-in) .woocommerce .product-remove,
+body:not(.logged-in) .woocommerce .table_quote_totals,
+body:not(.logged-in) .woocommerce .product-subtotal,
+body:not(.logged-in) .woocommerce .product-price {
+  display: none !important;
 }
 
 /*.product-videos-wrapper .product-video {
