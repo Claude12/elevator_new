@@ -35,3 +35,102 @@ function elevator_pingback_header() {
 	}
 }
 add_action( 'wp_head', 'elevator_pingback_header' );
+
+/**
+ * Add custom tooltip script.
+ */
+function elevator_add_custom_tooltip_script() {
+	?>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			document.querySelectorAll(".tooltip").forEach(function(el) {
+				el.addEventListener("mouseenter", function() {
+					let tooltipText = el.getAttribute("data-tooltip");
+					if (!tooltipText) return;
+
+					// Remove existing tooltips
+					document.querySelectorAll(".custom-tooltip").forEach(t => t.remove());
+
+					// Create tooltip element
+					let tooltip = document.createElement("div");
+					tooltip.className = "custom-tooltip";
+					tooltip.textContent = tooltipText;
+					document.body.appendChild(tooltip);
+
+					// Get element position
+					let rect = el.getBoundingClientRect();
+					let scrollTop = window.scrollY || document.documentElement.scrollTop;
+					let scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+
+					// Set tooltip position (Above the element)
+					let tooltipWidth = tooltip.offsetWidth;
+					let tooltipHeight = tooltip.offsetHeight;
+
+					tooltip.style.left = (rect.left + scrollLeft - 50) + "px";
+					tooltip.style.top = (rect.top + scrollTop - tooltipHeight - 50) + "px";
+
+					// Adjust if tooltip goes out of viewport
+					if (tooltip.getBoundingClientRect().top < 0) {
+						tooltip.style.top = (rect.bottom + scrollTop + 20) + "px"; // Move below if necessary
+					}
+
+					el.addEventListener("mouseleave", function() {
+						tooltip.remove();
+					});
+				});
+			});
+		});
+	</script>
+	<?php
+}
+add_action( 'wp_footer', 'elevator_add_custom_tooltip_script' );
+
+/**
+ * Allow shortcodes in taxonomy descriptions.
+ */
+add_filter( 'term_description', 'do_shortcode' );
+
+/**
+ * Allow more HTML tags in taxonomy description.
+ *
+ * @param int $term_id Term ID.
+ */
+function elevator_allow_html_in_taxonomy_description( $term_id ) {
+	if ( isset( $_POST['description'] ) ) {
+		// Define allowed HTML tags.
+		$allowed_html = array(
+			'a'      => array(
+				'href'  => array(),
+				'title' => array(),
+			),
+			'strong' => array(),
+			'em'     => array(),
+			'p'      => array(),
+			'br'     => array(),
+			'ul'     => array(),
+			'ol'     => array(),
+			'li'     => array(),
+			'img'    => array(
+				'src'    => array(),
+				'alt'    => array(),
+				'width'  => array(),
+				'height' => array(),
+			),
+			'iframe' => array(
+				'src'             => array(),
+				'frameborder'     => array(),
+				'width'           => array(),
+				'height'          => array(),
+				'allowfullscreen' => array(),
+			),
+		);
+
+		// Sanitize description and save it.
+		$description = wp_kses( wp_unslash( $_POST['description'] ), $allowed_html );
+		wp_update_term( $term_id, 'category', array( 'description' => $description ) );
+	}
+}
+add_action( 'edited_category', 'elevator_allow_html_in_taxonomy_description' );
+add_action( 'edited_post_tag', 'elevator_allow_html_in_taxonomy_description' );
+add_action( 'edited_product_cat', 'elevator_allow_html_in_taxonomy_description' );
+add_action( 'edited_product_tag', 'elevator_allow_html_in_taxonomy_description' );

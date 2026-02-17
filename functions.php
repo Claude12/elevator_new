@@ -58,6 +58,16 @@ require get_template_directory() . '/class-wp-bootstrap-navwalker.php';
 require get_template_directory() . '/inc/acf.php';
 
 /**
+ * Shortcodes.
+ */
+require get_template_directory() . '/inc/shortcodes.php';
+
+/**
+ * Admin customizations.
+ */
+require get_template_directory() . '/inc/admin.php';
+
+/**
  * WooCommerce helpers (product query functions used by modules).
  */
 require get_template_directory() . '/inc/woocommerce-helpers.php';
@@ -67,6 +77,12 @@ require get_template_directory() . '/inc/woocommerce-helpers.php';
  */
 if ( class_exists( 'WooCommerce' ) ) {
 	require get_template_directory() . '/inc/woocommerce.php';
+	require get_template_directory() . '/inc/woocommerce-single-product.php';
+	require get_template_directory() . '/inc/woocommerce-search.php';
+	require get_template_directory() . '/inc/woocommerce-account.php';
+	require get_template_directory() . '/inc/woocommerce-continuous-length.php';
+	require get_template_directory() . '/inc/woocommerce-emails.php';
+	require get_template_directory() . '/inc/woocommerce-quote.php';
 }
 
 /**
