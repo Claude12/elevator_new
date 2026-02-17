@@ -38,28 +38,36 @@ function elevator_woocommerce_search_meta( $sql, $search, $sql_where ) {
 		$sql .= $sku_sql . $brand_sql . $oem_sql;
 
 		// Join meta tables for SKU, brand_name, and oem_number.
-		add_filter(
-			'posts_join',
-			function( $join_sql ) use ( $wpdb ) {
-				if ( strpos( $join_sql, 'sku_meta' ) === false ) {
-					$join_sql .= " LEFT JOIN {$wpdb->postmeta} AS sku_meta ON ({$wpdb->posts}.ID = sku_meta.post_id AND sku_meta.meta_key = '_sku')";
-				}
-				if ( strpos( $join_sql, 'brand_meta' ) === false ) {
-					$join_sql .= " LEFT JOIN {$wpdb->postmeta} AS brand_meta ON ({$wpdb->posts}.ID = brand_meta.post_id AND brand_meta.meta_key = 'brand_name')";
-				}
-				if ( strpos( $join_sql, 'oem_meta' ) === false ) {
-					$join_sql .= " LEFT JOIN {$wpdb->postmeta} AS oem_meta ON ({$wpdb->posts}.ID = oem_meta.post_id AND oem_meta.meta_key = 'oem_number')";
-				}
-				return $join_sql;
+		$join_callback = function( $join_sql ) use ( $wpdb ) {
+			if ( strpos( $join_sql, 'sku_meta' ) === false ) {
+				$join_sql .= " LEFT JOIN {$wpdb->postmeta} AS sku_meta ON ({$wpdb->posts}.ID = sku_meta.post_id AND sku_meta.meta_key = '_sku')";
 			}
-		);
+			if ( strpos( $join_sql, 'brand_meta' ) === false ) {
+				$join_sql .= " LEFT JOIN {$wpdb->postmeta} AS brand_meta ON ({$wpdb->posts}.ID = brand_meta.post_id AND brand_meta.meta_key = 'brand_name')";
+			}
+			if ( strpos( $join_sql, 'oem_meta' ) === false ) {
+				$join_sql .= " LEFT JOIN {$wpdb->postmeta} AS oem_meta ON ({$wpdb->posts}.ID = oem_meta.post_id AND oem_meta.meta_key = 'oem_number')";
+			}
+			return $join_sql;
+		};
 
-		// Add DISTINCT to avoid duplicate rows due to extra LEFT JOINs.
-		add_filter(
-			'posts_distinct',
-			function( $distinct ) {
-				return 'DISTINCT';
-			}
+		$distinct_callback = function( $distinct ) {
+			return 'DISTINCT';
+		};
+
+		// Add filters with priority 10.
+		add_filter( 'posts_join', $join_callback, 10 );
+		add_filter( 'posts_distinct', $distinct_callback, 10 );
+
+		// Remove filters after the query completes to prevent side effects.
+		add_action(
+			'the_posts',
+			function( $posts ) use ( $join_callback, $distinct_callback ) {
+				remove_filter( 'posts_join', $join_callback, 10 );
+				remove_filter( 'posts_distinct', $distinct_callback, 10 );
+				return $posts;
+			},
+			10
 		);
 	}
 
