@@ -10,29 +10,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Add "Continue Shopping" button before Addify's Update Quote button.
+ * Output shared CSS for continue-shopping buttons (only once).
  */
-function elevator_add_continue_shopping_before_update_quote() {
-	if ( ! is_page( 'request-a-quote' ) ) {
+function elevator_output_quote_button_styles() {
+	static $styles_printed = false;
+
+	if ( $styles_printed ) {
 		return;
 	}
+
+	$styles_printed = true;
 	?>
-	<script type="text/javascript">
-	jQuery(document).ready(function($){
-		var updateButton = $('.afrfq_update_quote_btn');
-		if (updateButton.length) {
-			var continueButton = $('<a/>', {
-				text: '<?php esc_html_e( 'Continue Shopping', 'elevator' ); ?>',
-				href: '<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>',
-				class: 'button continue-shopping',
-				css: {
-					marginRight: '10px'
-				}
-			});
-			updateButton.before(continueButton);
-		}
-	});
-	</script>
 	<style>
 	.continue-shopping {
 		background-color: #FFF !important;
@@ -40,16 +28,61 @@ function elevator_add_continue_shopping_before_update_quote() {
 		padding: 0 !important;
 		text-decoration: none;
 		border-radius: 4px;
-		margin:10px !important;
 	}
 	.continue-shopping:hover {
 		color: #154ed3 !important;
 		text-decoration: underline !important;
 	}
+	.continue-shopping-back {
+		margin: 10px !important;
+	}
+	.continue-shopping-terms {
+		margin: 0px 20px 0 0 !important;
+	}
 	</style>
 	<?php
 }
-add_action( 'wp_footer', 'elevator_add_continue_shopping_before_update_quote' );
+
+/**
+ * Add "Continue Shopping" button before Addify's Update Quote button.
+ */
+function elevator_add_continue_shopping_before_update_quote() {
+	if ( ! is_page( 'request-a-quote' ) ) {
+		return;
+	}
+
+	elevator_output_quote_button_styles();
+
+	// Use wp_add_inline_script to add the jQuery code.
+	$script = "
+	jQuery(document).ready(function($){
+		var updateButton = $('.afrfq_update_quote_btn');
+		if (updateButton.length) {
+			var continueButton = $('<a/>', {
+				text: '" . esc_js( __( 'Continue Shopping', 'elevator' ) ) . "',
+				href: '" . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . "',
+				class: 'button continue-shopping continue-shopping-back'
+			});
+			updateButton.before(continueButton);
+		}
+	});
+	";
+
+	// Attach to elevator-main-js if available, otherwise output in footer.
+	if ( wp_script_is( 'elevator-main-js', 'registered' ) ) {
+		wp_add_inline_script( 'elevator-main-js', $script );
+	} else {
+		// Fallback: add to wp_footer with jQuery dependency.
+		add_action(
+			'wp_footer',
+			function() use ( $script ) {
+				echo '<script>' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			},
+			20
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'elevator_add_continue_shopping_before_update_quote' );
 
 /**
  * Add "Terms and Conditions" link before Addify's Place Quote button.
@@ -58,37 +91,37 @@ function elevator_terms_link_update_quote() {
 	if ( ! is_page( 'request-a-quote' ) ) {
 		return;
 	}
-	?>
-	<script type="text/javascript">
+
+	elevator_output_quote_button_styles();
+
+	// Use wp_add_inline_script to add the jQuery code.
+	$script = "
 	jQuery(document).ready(function($){
 		var updateButton = $('.addify_checkout_place_quote');
 		if (updateButton.length) {
 			var continueButton = $('<a/>', {
-				text: '<?php esc_html_e( 'Terms and Conditions', 'elevator' ); ?>',
-				href: '<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>',
-				class: 'button continue-shopping',
-				css: {
-					marginRight: '10px'
-				}
+				text: '" . esc_js( __( 'Terms and Conditions', 'elevator' ) ) . "',
+				href: '" . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . "',
+				class: 'button continue-shopping continue-shopping-terms'
 			});
 			updateButton.before(continueButton);
 		}
 	});
-	</script>
-	<style>
-	.continue-shopping {
-		background-color: #FFF !important;
-		color: #154ed3 !important;
-		padding: 0 !important;
-		text-decoration: none;
-		border-radius: 4px;
-		margin:0px 20px 0 0 !important;
+	";
+
+	// Attach to elevator-main-js if available, otherwise output in footer.
+	if ( wp_script_is( 'elevator-main-js', 'registered' ) ) {
+		wp_add_inline_script( 'elevator-main-js', $script );
+	} else {
+		// Fallback: add to wp_footer with jQuery dependency.
+		add_action(
+			'wp_footer',
+			function() use ( $script ) {
+				echo '<script>' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			},
+			20
+		);
 	}
-	.continue-shopping:hover {
-		color: #154ed3 !important;
-		text-decoration: underline !important;
-	}
-	</style>
-	<?php
 }
-add_action( 'wp_footer', 'elevator_terms_link_update_quote' );
+add_action( 'wp_enqueue_scripts', 'elevator_terms_link_update_quote' );
+

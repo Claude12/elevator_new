@@ -40,8 +40,7 @@ add_action( 'wp_head', 'elevator_pingback_header' );
  * Add custom tooltip script.
  */
 function elevator_add_custom_tooltip_script() {
-	?>
-	<script>
+	$script = '
 		document.addEventListener("DOMContentLoaded", function() {
 			document.querySelectorAll(".tooltip").forEach(function(el) {
 				el.addEventListener("mouseenter", function() {
@@ -80,8 +79,15 @@ function elevator_add_custom_tooltip_script() {
 				});
 			});
 		});
-	</script>
-	<?php
+	';
+
+	// Use wp_add_inline_script if elevator-main-js is registered.
+	if ( wp_script_is( 'elevator-main-js', 'registered' ) ) {
+		wp_add_inline_script( 'elevator-main-js', $script );
+	} else {
+		// Fallback to direct output if script not available.
+		echo '<script>' . $script . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
 }
 add_action( 'wp_footer', 'elevator_add_custom_tooltip_script' );
 
@@ -93,9 +99,19 @@ add_filter( 'term_description', 'do_shortcode' );
 /**
  * Allow more HTML tags in taxonomy description.
  *
+ * Note: This function is hooked to multiple taxonomy edit actions:
+ * edited_category, edited_post_tag, edited_product_cat, edited_product_tag.
+ * These actions fire after WordPress has already verified the nonce in
+ * wp-admin/edit-tags.php, so we only need to check capabilities here.
+ *
  * @param int $term_id Term ID.
  */
 function elevator_allow_html_in_taxonomy_description( $term_id ) {
+	if ( ! current_user_can( 'manage_categories' ) ) {
+		return;
+	}
+
+	// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce verified by WordPress core in edit-tags.php before taxonomy edit actions fire.
 	if ( isset( $_POST['description'] ) ) {
 		// Define allowed HTML tags.
 		$allowed_html = array(

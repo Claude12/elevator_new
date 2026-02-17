@@ -48,7 +48,6 @@ function elevator_product_slider_shortcode( $atts ) {
 				<?php
 				while ( $query->have_posts() ) :
 					$query->the_post();
-					global $product;
 					?>
 					<div class="swiper-slide">
 						<a href="<?php the_permalink(); ?>">
@@ -67,6 +66,9 @@ function elevator_product_slider_shortcode( $atts ) {
 			<div class="swiper-button-prev"></div>
 		</div>
 		<script>
+			// Note: This script must remain inline as it's specific to this shortcode instance.
+			// wp_add_inline_script cannot be used here as it would only execute once,
+			// but multiple shortcodes might exist on the same page with different selectors.
 			document.addEventListener('DOMContentLoaded', function() {
 				new Swiper('.swiper-container', {
 					slidesPerView: 3,
@@ -129,6 +131,8 @@ add_shortcode( 'divider', 'elevator_divider_shortcode' );
  * @return string HTML output.
  */
 function elevator_linkedin_profile_shortcode() {
+	static $script_enqueued = false;
+
 	$linkedin_url = get_field( 'linkedin_url', 'option' );
 
 	if ( ! $linkedin_url ) {
@@ -136,11 +140,25 @@ function elevator_linkedin_profile_shortcode() {
 	}
 
 	// Extract the company username or ID from URL.
-	$parsed_url  = wp_parse_url( $linkedin_url );
-	$path_parts  = explode( '/', trim( $parsed_url['path'], '/' ) );
+	$parsed_url   = wp_parse_url( $linkedin_url );
+	$path_parts   = explode( '/', trim( $parsed_url['path'], '/' ) );
 	$company_name = end( $path_parts );
 
-	return '<script src="https://platform.linkedin.com/in.js" type="text/javascript"></script>
-			<script type="IN/FollowCompany" data-id="' . esc_attr( $company_name ) . '" data-counter="right"></script>';
+	// Enqueue LinkedIn script only once.
+	if ( ! $script_enqueued ) {
+		wp_enqueue_script(
+			'linkedin-platform',
+			'https://platform.linkedin.com/in.js',
+			array(),
+			null,
+			array(
+				'strategy' => 'async',
+				'in_footer' => true,
+			)
+		);
+		$script_enqueued = true;
+	}
+
+	return '<script type="IN/FollowCompany" data-id="' . esc_attr( $company_name ) . '" data-counter="right"></script>';
 }
 add_shortcode( 'linkedin_profile', 'elevator_linkedin_profile_shortcode' );

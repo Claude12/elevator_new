@@ -151,20 +151,20 @@ function elevator_woo_mcl_variable_product_field() {
 				}
 			}
 
-			document.addEventListener('found_variation', function(e) {
-				var v = e && e.detail ? e.detail : null;
-				if (!v || !('variation_id' in v)) {
+			// Use jQuery events instead of native DOM events for WooCommerce compatibility.
+			jQuery(document).on('found_variation', '.variations_form', function(e, variation) {
+				if (!variation || !('variation_id' in variation)) {
 					hideField();
 					return;
 				}
 
-				var vid = String(v.variation_id);
+				var vid = String(variation.variation_id);
 				var max = (vid in map) ? parseFloat(map[vid]) : 0;
 
 				(max > 0) ? showField(max) : hideField();
 			});
 
-			document.addEventListener('reset_data', function() {
+			jQuery(document).on('reset_data', '.variations_form', function() {
 				hideField();
 			});
 		})();
@@ -254,16 +254,34 @@ function elevator_woo_mcl_get_item_data( $item_data, $cart_item ) {
 add_filter( 'woocommerce_get_item_data', 'elevator_woo_mcl_get_item_data', 10, 2 );
 
 /**
- * Cable quantity limit for product ID 11947.
+ * Cable quantity limit for specific product.
  *
  * @param array      $args    Quantity input args.
  * @param WC_Product $product Product object.
  * @return array Modified args.
  */
 function elevator_limit_cable_quantity_per_product( $args, $product ) {
-	if ( $product->get_id() == 11947 ) {
-		$args['min_value'] = 1;
-		$args['max_value'] = 40;
+	/**
+	 * Filter the product ID for cable quantity limit.
+	 *
+	 * @param int $product_id Product ID to limit. Default 11947.
+	 */
+	$limited_product_id = apply_filters( 'elevator_cable_quantity_limit_product_id', 11947 );
+
+	if ( $product->get_id() == $limited_product_id ) {
+		/**
+		 * Filter the minimum quantity for cable product.
+		 *
+		 * @param int $min_value Minimum quantity. Default 1.
+		 */
+		$args['min_value'] = apply_filters( 'elevator_cable_quantity_limit_min', 1 );
+
+		/**
+		 * Filter the maximum quantity for cable product.
+		 *
+		 * @param int $max_value Maximum quantity. Default 40.
+		 */
+		$args['max_value'] = apply_filters( 'elevator_cable_quantity_limit_max', 40 );
 	}
 	return $args;
 }

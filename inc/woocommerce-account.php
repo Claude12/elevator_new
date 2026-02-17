@@ -51,12 +51,17 @@ function elevator_add_print_order_button( $order ) {
 		return;
 	}
 
-	$order_id = $order->get_id();
+	$order_id   = $order->get_id();
+	$print_url  = wp_nonce_url(
+		add_query_arg( 'print-order', $order_id, home_url() ),
+		'elevator_print_order_' . $order_id
+	);
 	?>
 	<div class="woocommerce-order-actions">
-		<a href="<?php echo esc_url( add_query_arg( 'print-order', $order_id, home_url() ) ); ?>" target="_blank" class="button">
+		<a href="<?php echo esc_url( $print_url ); ?>" target="_blank" class="button">
 			<?php esc_html_e( 'Print Order', 'elevator' ); ?>
 		</a>
+	</div>
 	<?php
 }
 add_action( 'woocommerce_order_details_after_order_table', 'elevator_add_print_order_button' );
@@ -67,7 +72,14 @@ add_action( 'woocommerce_order_details_after_order_table', 'elevator_add_print_o
 function elevator_handle_print_order_page() {
 	if ( isset( $_GET['print-order'] ) ) {
 		$order_id = intval( $_GET['print-order'] );
-		$order    = wc_get_order( $order_id );
+
+		// Security: verify nonce.
+		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
+		if ( ! wp_verify_nonce( $nonce, 'elevator_print_order_' . $order_id ) ) {
+			wp_die( esc_html__( 'Security check failed.', 'elevator' ) );
+		}
+
+		$order = wc_get_order( $order_id );
 
 		// Security: check if user can view this order.
 		if ( ! $order || ! current_user_can( 'view_order', $order_id ) ) {
@@ -104,6 +116,7 @@ function elevator_add_repeat_order_button( $order ) {
 		'repeat_order_' . $order_id
 	);
 	?>
+	<div class="woocommerce-order-actions">
 		<a href="<?php echo esc_url( $repeat_url ); ?>" class="button">
 			<?php esc_html_e( 'Repeat Order', 'elevator' ); ?>
 		</a>
@@ -179,7 +192,7 @@ add_filter( 'login_form_bottom', 'elevator_remove_lost_password_text' );
  */
 function elevator_redirect_lost_password_endpoint() {
 	if ( is_wc_endpoint_url( 'lost-password' ) ) {
-		wp_redirect( wc_get_page_permalink( 'myaccount' ) );
+		wp_safe_redirect( wc_get_page_permalink( 'myaccount' ) );
 		exit;
 	}
 }

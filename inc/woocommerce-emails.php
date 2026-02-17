@@ -18,17 +18,31 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string Modified text.
  */
 function elevator_custom_woocommerce_address_labels( $translated_text, $text, $domain ) {
-	if ( 'woocommerce' === $domain ) {
-		if ( $text === 'Billing address' ) {
-			$translated_text = __( 'Invoice address', 'elevator' );
-		}
-		if ( $text === 'Shipping address' ) {
-			$translated_text = __( 'Delivery address', 'elevator' );
-		}
+	// Early return if not WooCommerce domain.
+	if ( 'woocommerce' !== $domain ) {
+		return $translated_text;
 	}
+
+	if ( $text === 'Billing address' ) {
+		$translated_text = __( 'Invoice address', 'elevator' );
+	}
+	if ( $text === 'Shipping address' ) {
+		$translated_text = __( 'Delivery address', 'elevator' );
+	}
+
 	return $translated_text;
 }
-add_filter( 'gettext', 'elevator_custom_woocommerce_address_labels', 20, 3 );
+
+/**
+ * Conditionally hook gettext filter only on WooCommerce pages for performance.
+ */
+function elevator_conditionally_hook_gettext_filters() {
+	// Only hook on WooCommerce-specific pages.
+	if ( is_woocommerce() || is_cart() || is_checkout() || is_account_page() ) {
+		add_filter( 'gettext', 'elevator_custom_woocommerce_address_labels', 20, 3 );
+	}
+}
+add_action( 'template_redirect', 'elevator_conditionally_hook_gettext_filters' );
 
 /**
  * Override email heading for order received email.

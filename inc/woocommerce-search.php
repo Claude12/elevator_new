@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Front-end product search: include taxonomies in OR tax_query.
+ * Front-end product search: include taxonomies using posts_join and posts_where.
  *
  * @param WP_Query $q Query object.
  */
@@ -30,36 +30,82 @@ function elevator_search_include_taxonomies( $q ) {
 		return;
 	}
 
-	// Add a permissive OR tax query that matches names LIKE the search term.
-	$tax_or = array(
-		'relation' => 'OR',
-		array(
-			'taxonomy' => 'product_cat',
-			'field'    => 'name',
-			'terms'    => $term,
-			'operator' => 'LIKE',
-		),
-		array(
-			'taxonomy' => 'product_tag',
-			'field'    => 'name',
-			'terms'    => $term,
-			'operator' => 'LIKE',
-		),
-		array(
-			'taxonomy' => 'product_brand',
-			'field'    => 'name',
-			'terms'    => $term,
-			'operator' => 'LIKE',
-		),
-	);
-
-	$existing = (array) $q->get( 'tax_query' );
-	$q->set( 'tax_query', array_merge( $existing, array( $tax_or ) ) );
-
-	// Ensure duplicates are collapsed.
-	$q->set( 'posts_per_page', $q->get( 'posts_per_page' ) ?: get_option( 'posts_per_page' ) );
+	// Store the search term for use in filters.
+	$q->set( 'elevator_tax_search_term', $term );
 }
 add_action( 'pre_get_posts', 'elevator_search_include_taxonomies', 9 );
+
+/**
+ * Join taxonomy tables for product search.
+ *
+ * @param string   $join Join clause.
+ * @param WP_Query $q    Query object.
+ * @return string Modified join clause.
+ */
+function elevator_search_taxonomy_join( $join, $q ) {
+	if (
+		! $q->is_main_query() ||
+		! $q->is_search() ||
+		! ( $q->get( 'post_type' ) === 'product' ||
+			( is_array( $q->get( 'post_type' ) ) && in_array( 'product', (array) $q->get( 'post_type' ), true ) ) ) ||
+		! $q->get( 'elevator_tax_search_term' )
+	) {
+		return $join;
+	}
+
+	global $wpdb;
+
+	// Check if our custom joins are already present by looking for our specific aliases.
+	// Using unique aliases prevents conflicts with other code.
+	if ( strpos( $join, 'etr_tax_search' ) === false ) {
+		$join .= " LEFT JOIN {$wpdb->term_relationships} AS etr_tax_search ON ({$wpdb->posts}.ID = etr_tax_search.object_id)";
+	}
+	if ( strpos( $join, 'ett_tax_search' ) === false ) {
+		$join .= " LEFT JOIN {$wpdb->term_taxonomy} AS ett_tax_search ON (etr_tax_search.term_taxonomy_id = ett_tax_search.term_taxonomy_id AND ett_tax_search.taxonomy IN ('product_cat','product_tag','product_brand'))";
+	}
+	if ( strpos( $join, 'et_tax_search' ) === false ) {
+		$join .= " LEFT JOIN {$wpdb->terms} AS et_tax_search ON (ett_tax_search.term_id = et_tax_search.term_id)";
+	}
+
+	return $join;
+}
+add_filter( 'posts_join', 'elevator_search_taxonomy_join', 10, 2 );
+
+/**
+ * Add taxonomy name match to WHERE clause for product search.
+ *
+ * @param string   $where Where clause.
+ * @param WP_Query $q     Query object.
+ * @return string Modified where clause.
+ */
+function elevator_search_taxonomy_where( $where, $q ) {
+	if (
+		! $q->is_main_query() ||
+		! $q->is_search() ||
+		! ( $q->get( 'post_type' ) === 'product' ||
+			( is_array( $q->get( 'post_type' ) ) && in_array( 'product', (array) $q->get( 'post_type' ), true ) ) ) ||
+		! $q->get( 'elevator_tax_search_term' )
+	) {
+		return $where;
+	}
+
+	global $wpdb;
+	$term = $q->get( 'elevator_tax_search_term' );
+	$like = '%' . $wpdb->esc_like( $term ) . '%';
+
+	// Inject OR condition for taxonomy name match before the last closing parenthesis.
+	if ( $where && strpos( $where, ')' ) !== false ) {
+		$where = preg_replace(
+			'/\)\s*$/',
+			$wpdb->prepare( ' OR et_tax_search.name LIKE %s)', $like ),
+			$where,
+			1
+		);
+	}
+
+	return $where;
+}
+add_filter( 'posts_where', 'elevator_search_taxonomy_where', 10, 2 );
 
 /**
  * WooCommerce product data store search: include SKU and brand_name meta.
