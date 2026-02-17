@@ -80,4 +80,4 @@ function elevator_guest_hide_add_to_quote_button() {
 		wp_add_inline_style( 'elevator-style', $custom_css );
 	}
 }
-add_action( 'wp_enqueue_scripts', 'elevator_guest_hide_add_to_quote_button' );
+add_action( 'wp_enqueue_scripts', 'elevator_guest_hide_add_to_quote_button', 20 );
