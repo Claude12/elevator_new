@@ -156,3 +156,47 @@ if ( ! function_exists( 'elevator_woocommerce_header_cart' ) ) {
 		<?php
 	}
 }
+
+/**
+ * Shop/Category Page Customizations
+ */
+
+/**
+ * Override theme default specification for product # per row.
+ *
+ * @return int Number of products per row.
+ */
+function elevator_loop_columns() {
+	return 3; // 3 products per row.
+}
+add_filter( 'loop_shop_columns', 'elevator_loop_columns', 999 );
+
+// Remove the default category description position.
+remove_action( 'woocommerce_archive_description', 'woocommerce_taxonomy_archive_description', 10 );
+
+// Add the category description below the product list.
+add_action( 'woocommerce_after_shop_loop', 'woocommerce_taxonomy_archive_description', 10 );
+
+/**
+ * Remove category page title.
+ *
+ * @param bool $show_title Whether to show the title.
+ * @return bool Modified setting.
+ */
+function elevator_remove_category_page_title( $show_title ) {
+	if ( is_product_category() ) {
+		return false; // Remove title on category pages.
+	}
+	return $show_title; // Keep title on other pages.
+}
+add_filter( 'woocommerce_show_page_title', 'elevator_remove_category_page_title' );
+
+/**
+ * Remove Add to Cart button on product category pages.
+ */
+function elevator_remove_add_to_cart_button_on_category_page() {
+	if ( function_exists( 'is_product_category' ) && is_product_category() ) {
+		remove_action( 'woocommerce_after_shop_loop_item', 'woocommerce_template_loop_add_to_cart', 10 );
+	}
+}
+add_action( 'wp', 'elevator_remove_add_to_cart_button_on_category_page' );
