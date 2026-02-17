@@ -18,6 +18,12 @@ if ( function_exists( 'is_cart' ) && ( is_cart() || is_checkout() || is_account_
 	return;
 }
 
+// If this is the Request a Quote page, use singular template (no sidebar).
+if ( is_page( 'request-a-quote' ) ) {
+	get_template_part( 'singular' );
+	return;
+}
+
 get_header();
 ?>
 
