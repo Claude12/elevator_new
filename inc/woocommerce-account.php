@@ -94,7 +94,7 @@ function elevator_add_repeat_order_button( $order ) {
 add_action( 'woocommerce_order_details_after_order_table', 'elevator_add_repeat_order_button' );
 
 /**
- * Handle repeat order.
+ * Handle repeat order — supports both simple and variable products.
  */
 function elevator_handle_repeat_order() {
 	if ( ! isset( $_GET['repeat_order'] ) ) {
@@ -122,12 +122,46 @@ function elevator_handle_repeat_order() {
 	WC()->cart->empty_cart();
 
 	foreach ( $order->get_items() as $item ) {
-		$product_id = $item->get_product_id();
-		$quantity   = $item->get_quantity();
+		$product_id   = $item->get_product_id();
+		$variation_id = $item->get_variation_id(); // 0 for simple products.
+		$quantity     = $item->get_quantity();
 
-		$product = wc_get_product( $product_id );
-		if ( $product && $product->is_purchasable() && $product->is_in_stock() ) {
-			WC()->cart->add_to_cart( $product_id, $quantity );
+		// For variable products, get the exact variation attributes from the order item.
+		$variation = array();
+		if ( $variation_id ) {
+			$variation_product = wc_get_product( $variation_id );
+			if ( ! $variation_product ) {
+				continue; // Variation no longer exists, skip.
+			}
+
+			// Get the variation attributes stored on the order item meta.
+			$item_meta = $item->get_meta_data();
+			foreach ( $item_meta as $meta ) {
+				$meta_data = $meta->get_data();
+				$key       = $meta_data['key'];
+				// Variation attributes are stored as 'pa_size', 'pa_colour', etc.
+				if ( taxonomy_exists( $key ) || strpos( $key, 'pa_' ) === 0 ) {
+					$variation[ 'attribute_' . $key ] = $meta_data['value'];
+				}
+			}
+
+			// Fallback: if no variation attributes found from meta, try the variation product itself.
+			if ( empty( $variation ) && $variation_product ) {
+				$variation = $variation_product->get_variation_attributes();
+			}
+
+			// Check the variation product is purchasable and in stock.
+			if ( ! $variation_product->is_purchasable() || ! $variation_product->is_in_stock() ) {
+				continue;
+			}
+
+			WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation );
+		} else {
+			// Simple product.
+			$product = wc_get_product( $product_id );
+			if ( $product && $product->is_purchasable() && $product->is_in_stock() ) {
+				WC()->cart->add_to_cart( $product_id, $quantity );
+			}
 		}
 	}
 
