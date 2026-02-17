@@ -128,6 +128,8 @@ add_shortcode( 'divider', 'elevator_divider_shortcode' );
  * @return string HTML output.
  */
 function elevator_linkedin_profile_shortcode() {
+	static $script_enqueued = false;
+
 	$linkedin_url = get_field( 'linkedin_url', 'option' );
 
 	if ( ! $linkedin_url ) {
@@ -135,11 +137,25 @@ function elevator_linkedin_profile_shortcode() {
 	}
 
 	// Extract the company username or ID from URL.
-	$parsed_url  = wp_parse_url( $linkedin_url );
-	$path_parts  = explode( '/', trim( $parsed_url['path'], '/' ) );
+	$parsed_url   = wp_parse_url( $linkedin_url );
+	$path_parts   = explode( '/', trim( $parsed_url['path'], '/' ) );
 	$company_name = end( $path_parts );
 
-	return '<script src="https://platform.linkedin.com/in.js" type="text/javascript"></script>
-			<script type="IN/FollowCompany" data-id="' . esc_attr( $company_name ) . '" data-counter="right"></script>';
+	// Enqueue LinkedIn script only once.
+	if ( ! $script_enqueued ) {
+		wp_enqueue_script(
+			'linkedin-platform',
+			'https://platform.linkedin.com/in.js',
+			array(),
+			null,
+			array(
+				'strategy' => 'async',
+				'in_footer' => true,
+			)
+		);
+		$script_enqueued = true;
+	}
+
+	return '<script type="IN/FollowCompany" data-id="' . esc_attr( $company_name ) . '" data-counter="right"></script>';
 }
 add_shortcode( 'linkedin_profile', 'elevator_linkedin_profile_shortcode' );
