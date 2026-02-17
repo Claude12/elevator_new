@@ -52,23 +52,25 @@ function elevator_add_continue_shopping_before_update_quote() {
 	}
 
 	elevator_output_quote_button_styles();
-	?>
-	<script type="text/javascript">
+
+	// Use wp_add_inline_script to add the jQuery code.
+	$script = "
 	jQuery(document).ready(function($){
 		var updateButton = $('.afrfq_update_quote_btn');
 		if (updateButton.length) {
 			var continueButton = $('<a/>', {
-				text: '<?php esc_html_e( 'Continue Shopping', 'elevator' ); ?>',
-				href: '<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>',
+				text: '" . esc_js( __( 'Continue Shopping', 'elevator' ) ) . "',
+				href: '" . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . "',
 				class: 'button continue-shopping continue-shopping-back'
 			});
 			updateButton.before(continueButton);
 		}
 	});
-	</script>
-	<?php
+	";
+
+	wp_add_inline_script( 'jquery', $script );
 }
-add_action( 'wp_footer', 'elevator_add_continue_shopping_before_update_quote' );
+add_action( 'wp_enqueue_scripts', 'elevator_add_continue_shopping_before_update_quote' );
 
 /**
  * Add "Terms and Conditions" link before Addify's Place Quote button.
@@ -79,21 +81,23 @@ function elevator_terms_link_update_quote() {
 	}
 
 	elevator_output_quote_button_styles();
-	?>
-	<script type="text/javascript">
+
+	// Use wp_add_inline_script to add the jQuery code.
+	$script = "
 	jQuery(document).ready(function($){
 		var updateButton = $('.addify_checkout_place_quote');
 		if (updateButton.length) {
 			var continueButton = $('<a/>', {
-				text: '<?php esc_html_e( 'Terms and Conditions', 'elevator' ); ?>',
-				href: '<?php echo esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ); ?>',
+				text: '" . esc_js( __( 'Terms and Conditions', 'elevator' ) ) . "',
+				href: '" . esc_url( get_permalink( wc_get_page_id( 'shop' ) ) ) . "',
 				class: 'button continue-shopping continue-shopping-terms'
 			});
 			updateButton.before(continueButton);
 		}
 	});
-	</script>
-	<?php
+	";
+
+	wp_add_inline_script( 'jquery', $script );
 }
-add_action( 'wp_footer', 'elevator_terms_link_update_quote' );
+add_action( 'wp_enqueue_scripts', 'elevator_terms_link_update_quote' );
 

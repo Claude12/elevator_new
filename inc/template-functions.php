@@ -40,8 +40,7 @@ add_action( 'wp_head', 'elevator_pingback_header' );
  * Add custom tooltip script.
  */
 function elevator_add_custom_tooltip_script() {
-	?>
-	<script>
+	$script = '
 		document.addEventListener("DOMContentLoaded", function() {
 			document.querySelectorAll(".tooltip").forEach(function(el) {
 				el.addEventListener("mouseenter", function() {
@@ -80,8 +79,15 @@ function elevator_add_custom_tooltip_script() {
 				});
 			});
 		});
-	</script>
-	<?php
+	';
+
+	// Use wp_add_inline_script if elevator-main-js is enqueued, otherwise output directly.
+	if ( wp_script_is( 'elevator-main-js', 'enqueued' ) ) {
+		wp_add_inline_script( 'elevator-main-js', $script );
+	} else {
+		// Fallback to direct output if script not available.
+		echo '<script>' . $script . '</script>';
+	}
 }
 add_action( 'wp_footer', 'elevator_add_custom_tooltip_script' );
 

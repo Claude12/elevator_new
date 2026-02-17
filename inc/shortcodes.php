@@ -66,6 +66,9 @@ function elevator_product_slider_shortcode( $atts ) {
 			<div class="swiper-button-prev"></div>
 		</div>
 		<script>
+			// Note: This script must remain inline as it's specific to this shortcode instance.
+			// wp_add_inline_script cannot be used here as it would only execute once,
+			// but multiple shortcodes might exist on the same page with different selectors.
 			document.addEventListener('DOMContentLoaded', function() {
 				new Swiper('.swiper-container', {
 					slidesPerView: 3,
