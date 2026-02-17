@@ -134,26 +134,13 @@ function elevator_handle_repeat_order() {
 				continue; // Variation no longer exists, skip.
 			}
 
-			// Get the variation attributes stored on the order item meta.
-			$item_meta = $item->get_meta_data();
-			foreach ( $item_meta as $meta ) {
-				$meta_data = $meta->get_data();
-				$key       = $meta_data['key'];
-				// Variation attributes are stored as 'pa_size', 'pa_colour', etc.
-				if ( taxonomy_exists( $key ) || strpos( $key, 'pa_' ) === 0 ) {
-					$variation[ 'attribute_' . $key ] = $meta_data['value'];
-				}
-			}
-
-			// Fallback: if no variation attributes found from meta, try the variation product itself.
-			if ( empty( $variation ) && $variation_product ) {
-				$variation = $variation_product->get_variation_attributes();
-			}
-
 			// Check the variation product is purchasable and in stock.
 			if ( ! $variation_product->is_purchasable() || ! $variation_product->is_in_stock() ) {
 				continue;
 			}
+
+			// Get variation attributes - WooCommerce stores them on the variation product.
+			$variation = $variation_product->get_variation_attributes();
 
 			WC()->cart->add_to_cart( $product_id, $quantity, $variation_id, $variation );
 		} else {
