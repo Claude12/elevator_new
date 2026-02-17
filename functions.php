@@ -77,6 +77,7 @@ require get_template_directory() . '/inc/woocommerce-helpers.php';
  */
 if ( class_exists( 'WooCommerce' ) ) {
 	require get_template_directory() . '/inc/woocommerce.php';
+	require get_template_directory() . '/inc/woocommerce-archive.php';
 	require get_template_directory() . '/inc/woocommerce-single-product.php';
 	require get_template_directory() . '/inc/woocommerce-search.php';
 	require get_template_directory() . '/inc/woocommerce-account.php';

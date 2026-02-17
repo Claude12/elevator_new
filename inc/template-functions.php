@@ -150,3 +150,14 @@ add_action( 'edited_category', 'elevator_allow_html_in_taxonomy_description' );
 add_action( 'edited_post_tag', 'elevator_allow_html_in_taxonomy_description' );
 add_action( 'edited_product_cat', 'elevator_allow_html_in_taxonomy_description' );
 add_action( 'edited_product_tag', 'elevator_allow_html_in_taxonomy_description' );
+
+/**
+ * Set custom excerpt length.
+ *
+ * @param int $length Excerpt length.
+ * @return int Modified length.
+ */
+function elevator_excerpt_length( $length ) {
+	return 17;
+}
+add_filter( 'excerpt_length', 'elevator_excerpt_length' );
