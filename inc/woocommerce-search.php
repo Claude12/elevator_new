@@ -147,7 +147,15 @@ add_filter( 'posts_distinct', 'elevator_search_posts_distinct', 10, 2 );
 function elevator_search_custom_orderby( $orderby, $q ) {
 	global $wpdb;
 
-	if ( ! is_admin() && $q->is_search() && $q->is_main_query() && is_post_type_archive( 'product' ) ) {
+	if (
+		! is_admin() &&
+		$q->is_search() &&
+		$q->is_main_query() &&
+		(
+			$q->get( 'post_type' ) === 'product' ||
+			( is_array( $q->get( 'post_type' ) ) && in_array( 'product', (array) $q->get( 'post_type' ), true ) )
+		)
+	) {
 		$orderby = "
 			(SELECT meta_value FROM {$wpdb->postmeta} WHERE post_id = {$wpdb->posts}.ID AND meta_key = 'high_priority_search')+0 DESC,
 			{$wpdb->posts}.post_title ASC
