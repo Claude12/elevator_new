@@ -26,7 +26,7 @@ function elevator_custom_woocommerce_address_labels( $translated_text, $text, $d
 	if ( $text === 'Billing address' ) {
 		$translated_text = __( 'Invoice address', 'elevator' );
 	}
-	if ( $text === 'Shipping address' ) {
+	if ( $text === 'Branch address' ) {
 		$translated_text = __( 'Delivery address', 'elevator' );
 	}
 

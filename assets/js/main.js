@@ -1,100 +1,92 @@
-/**
- * Elevator Theme - Main JavaScript
- *
- * UI helpers only. No WooCommerce business logic.
- * Custom WooCommerce JS will be added in dedicated files during later phases.
- *
- * @package elevator
- */
-
 jQuery(document).ready(function ($) {
 
-	/* =========================================================
-	 * Mobile search popup toggle
-	 * ========================================================= */
-	$('#mobile-search-toggle').on('click', function () {
-		$('.woo-search-popup').fadeIn(200);
-	});
+  // =============================================
+  // Mobile Search Toggle
+  // =============================================
+  $("#mobile-search-toggle").on("click", function () {
+    $(".woo-search-popup").fadeIn(200);
+  });
 
-	$('.woo-search-popup__close').on('click', function () {
-		$('.woo-search-popup').fadeOut(200);
-	});
+  $(".woo-search-popup__close").on("click", function () {
+    $(".woo-search-popup").fadeOut(200);
+  });
 
-	// Close on outside click.
-	$(document).on('click', function (e) {
-		if (
-			$(e.target).closest('.woo-search-popup__inner, #mobile-search-toggle')
-				.length === 0
-		) {
-			$('.woo-search-popup').fadeOut(200);
-		}
-	});
+  $(document).on("click", function (e) {
+    if (
+      $(e.target).closest(".woo-search-popup__inner, #mobile-search-toggle")
+        .length === 0
+    ) {
+      $(".woo-search-popup").fadeOut(200);
+    }
+  });
 
-	/* =========================================================
-	 * WooCommerce product tabs — equal height panels
-	 * ========================================================= */
-	var maxTabHeight = 0;
+  // =============================================
+  // Variable Product: Price Display & Variation Events
+  // =============================================
+  const isVariable =
+    $("form.variations_form").length > 0 ||
+    $("body").hasClass("product-type-variable");
 
-	$('.woocommerce-Tabs-panel').each(function () {
-		var panelHeight = $(this).outerHeight();
-		if (panelHeight > maxTabHeight) {
-			maxTabHeight = panelHeight;
-		}
-	});
+  if (isVariable) {
+    $(".customized-section .price").text("Select Option");
 
-	$('.woocommerce-Tabs-panel').css('min-height', maxTabHeight + 'px');
+    const $form = $("form.variations_form");
 
+    $form.on("show_variation", function (e, v) {
+      if (v && v.price_html) {
+        $(".customized-section .price").html(v.price_html);
+      }
+    });
+
+    $form.on("hide_variation", function () {
+      $(".customized-section .price").text("Select Option");
+    });
+  }
+
+  // =============================================
+  // Tab Panel Height Equalization (after full load)
+  // =============================================
+  $(window).on("load", function () {
+    var maxHeight = 0;
+
+    $(".woocommerce-Tabs-panel").each(function () {
+      var panelHeight = $(this).outerHeight();
+      if (panelHeight > maxHeight) {
+        maxHeight = panelHeight;
+      }
+    });
+
+    $(".woocommerce-Tabs-panel").css("min-height", maxHeight + "px");
+  });
+
+  // =============================================
+  // Replace "Shipping Address" with "Branch Address" in My Account
+  // =============================================
+  var $scope = $(".woocommerce-MyAccount-content");
+
+  if ($scope.length) {
+    // Replace all descendant text nodes recursively
+    $scope
+      .find("*")
+      .addBack()
+      .contents()
+      .filter(function () {
+        return this.nodeType === 3;
+      })
+      .each(function () {
+        this.nodeValue = this.nodeValue
+          .replace(/Shipping Address/g, "Branch Address")
+          .replace(/shipping address/g, "branch address")
+          .replace(/Shipping address/g, "Branch address");
+      });
+
+    // Replace button text specifically
+    $scope
+      .find(".wc-address-book-add-shipping-button")
+      .text(function (_, text) {
+        return text
+          .replace(/Shipping Address Book/g, "Branch Address Book")
+          .replace(/Shipping Address/g, "Branch Address");
+      });
+  }
 });
-
-/**
- * Equal height for product loop items on archive pages.
- *
- * Runs outside jQuery.ready so it fires on window.load (images loaded).
- */
-(function () {
-	'use strict';
-
-	function equalizeProductHeights() {
-		var products = document.querySelectorAll(
-			'.archive ul.products li.product a.woocommerce-LoopProduct-link'
-		);
-
-		if (!products.length) {
-			products = document.querySelectorAll(
-				'.archive ul.products li.product a[aria-label^="Visit product"]'
-			);
-		}
-
-		if (!products.length) {
-			return;
-		}
-
-		var maxHeight = 0;
-
-		// Reset heights first to get accurate measurement.
-		products.forEach(function (product) {
-			product.style.height = '';
-		});
-
-		products.forEach(function (product) {
-			if (product.offsetHeight > maxHeight) {
-				maxHeight = product.offsetHeight;
-			}
-		});
-
-		products.forEach(function (product) {
-			product.style.height = maxHeight + 'px';
-		});
-	}
-
-	window.addEventListener('load', function () {
-		setTimeout(equalizeProductHeights, 100);
-	});
-
-	// Re-equalize on window resize.
-	var resizeTimer;
-	window.addEventListener('resize', function () {
-		clearTimeout(resizeTimer);
-		resizeTimer = setTimeout(equalizeProductHeights, 250);
-	});
-})();

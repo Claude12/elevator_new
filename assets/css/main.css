@@ -5371,6 +5371,12 @@ body:not(.logged-in) .woocommerce .product-price {
   display: none !important;
 }
 
+/* Variable product single page */
+.woocommerce-variation-price,
+.summary p.price {
+  display: none;
+}
+
 /*.product-videos-wrapper .product-video {
   width:100%;
   float:left;
