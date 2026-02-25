@@ -45,7 +45,7 @@ function elevator_po_field_output() {
 				'</label>' +
 				'<input type="text" id="elevator_po_number" name="additional_purchase_order" class="input-text" placeholder="<?php echo esc_js( __( 'Enter PO Number', 'elevator' ) ); ?>" style="width:100%;max-width:400px;padding:8px 12px;font-size:14px;border:1px solid #ccc;border-radius:4px;" />' +
 				'<span id="elevator_po_error" style="color:#c00;font-size:13px;margin-top:4px;display:block;"><?php echo esc_js( __( 'A Purchase Order Number is required.', 'elevator' ) ); ?></span>' +
-				'<span id="elevator_po_duplicate" style="display:none;color:#b45309;font-size:13px;margin-top:4px;display:none;background:#fffbeb;border:1px solid #fcd34d;border-radius:4px;padding:6px 10px;">' +
+				'<span id="elevator_po_duplicate" style="display:none;color:#b45309;font-size:13px;margin-top:4px;background:#fffbeb;border:1px solid #fcd34d;border-radius:4px;padding:6px 10px;">' +
 					'&#9888; <?php echo esc_js( __( 'This PO Number has already been used on a previous order. Please confirm this is correct before proceeding.', 'elevator' ) ); ?>' +
 				'</span>' +
 			'</div>'
@@ -133,6 +133,7 @@ function elevator_ajax_check_po_duplicate() {
 
 	if ( empty( $po ) ) {
 		wp_send_json_success( array( 'duplicate' => false ) );
+		wp_die();
 	}
 
 	// Search all orders for this meta value.
