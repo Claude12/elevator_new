@@ -5389,6 +5389,16 @@ body:not(.logged-in) .woocommerce .product-price {
   display: none;
 }
 
+/* Hide Convert order on acccount area */
+.woocommerce-account form.quote-convert-to-order {
+  display: none !important;
+}
+
+.woocommerce-account tr:has(.quote-convert-to-order) {
+  background-color: orange !important;
+}
+
+
 /*.product-videos-wrapper .product-video {
   width:100%;
   float:left;
