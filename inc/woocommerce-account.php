@@ -158,40 +158,6 @@ function elevator_handle_repeat_order() {
 add_action( 'template_redirect', 'elevator_handle_repeat_order' );
 
 /**
- * Disable password reset functionality.
- *
- * @param bool $allow  Whether to allow password reset.
- * @param int  $user_id User ID.
- * @return bool Always false.
- */
-function elevator_disable_password_reset( $allow, $user_id ) {
-	return false;
-}
-add_filter( 'allow_password_reset', 'elevator_disable_password_reset', 10, 2 );
-
-/**
- * Remove "Lost your password?" link from login form.
- *
- * @param string $text Login form bottom text.
- * @return string Modified text.
- */
-function elevator_remove_lost_password_text( $text ) {
-	return str_replace( '<a href="' . wp_lostpassword_url() . '">' . esc_html__( 'Lost your password?', 'elevator' ) . '</a>', '', $text );
-}
-add_filter( 'login_form_bottom', 'elevator_remove_lost_password_text' );
-
-/**
- * Redirect lost-password endpoint to My Account page.
- */
-function elevator_redirect_lost_password_endpoint() {
-	if ( is_wc_endpoint_url( 'lost-password' ) ) {
-		wp_safe_redirect( wc_get_page_permalink( 'myaccount' ) );
-		exit;
-	}
-}
-add_action( 'template_redirect', 'elevator_redirect_lost_password_endpoint' );
-
-/**
  * Helper: Get user's purchased product quantities.
  *
  * @param int   $user_id     User ID.
