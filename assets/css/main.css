@@ -5371,6 +5371,18 @@ body:not(.logged-in) .woocommerce .product-price {
   display: none !important;
 }
 
+/* Hide all offered-price columns + offered totals rows (incl. Offered VAT row) on the quote page */
+.woocommerce .adf-request-quote-page .addify-quote-form__contents th:nth-child(5),
+.woocommerce .adf-request-quote-page .addify-quote-form__contents td:nth-child(5),
+.woocommerce .adf-request-quote-page .addify-quote-form__contents th:nth-child(8),
+.woocommerce .adf-request-quote-page .addify-quote-form__contents td:nth-child(8),
+.woocommerce .adf-request-quote-page .offered-price,
+.woocommerce .adf-request-quote-page .offered-price-input,
+.woocommerce .adf-request-quote-page .cart_totals table.table_quote_totals tr.offered,
+.woocommerce .adf-request-quote-page .cart_totals table.table_quote_totals tbody > tr:nth-of-type(4) {
+  display: none !important;
+}
+
 /* Variable product single page */
 .woocommerce-variation-price,
 .summary p.price {
