@@ -17,14 +17,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * Hook - woocommerce_before_edit_account_form.
- *
- * @since 2.6.0
- */
 do_action( 'woocommerce_before_edit_account_form' );
 ?>
-
 
 <form class="woocommerce-EditAccountForm edit-account" action="" method="post" <?php do_action( 'woocommerce_edit_account_form_tag' ); ?> >
 
@@ -51,24 +45,28 @@ do_action( 'woocommerce_before_edit_account_form' );
 		<input type="email" class="woocommerce-Input woocommerce-Input--email input-text" name="account_email" id="account_email" autocomplete="email" value="<?php echo esc_attr( $user->user_email ); ?>" aria-required="true" />
 	</p>
 
-	<?php
-		/**
-		 * Hook where additional fields should be rendered.
-		 *
-		 * @since 8.7.0
-		 */
-		do_action( 'woocommerce_edit_account_form_fields' );
-	?>
 	<div class="clear"></div>
 
-	<?php
-		/**
-		 * My Account edit account form.
-		 *
-		 * @since 2.6.0
-		 */
-		do_action( 'woocommerce_edit_account_form' );
-	?>
+	<?php do_action( 'woocommerce_edit_account_form' ); ?>
+
+	<fieldset id="change-password">
+		<legend><?php esc_html_e( 'Password change', 'woocommerce' ); ?></legend>
+
+		<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+			<label for="password_current"><?php esc_html_e( 'Current password (leave blank to leave unchanged)', 'woocommerce' ); ?></label>
+			<input type="password" class="woocommerce-Input woocommerce-Input--password input-text" name="password_current" id="password_current" autocomplete="off" />
+		</p>
+		<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+			<label for="password_1"><?php esc_html_e( 'New password (leave blank to leave unchanged)', 'woocommerce' ); ?></label>
+			<input type="password" class="woocommerce-Input woocommerce-Input--password input-text" name="password_1" id="password_1" autocomplete="new-password" />
+		</p>
+		<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+			<label for="password_2"><?php esc_html_e( 'Confirm new password', 'woocommerce' ); ?></label>
+			<input type="password" class="woocommerce-Input woocommerce-Input--password input-text" name="password_2" id="password_2" autocomplete="new-password" />
+		</p>
+	</fieldset>
+
+	<div class="clear"></div>
 
 	<p>
 		<?php wp_nonce_field( 'save_account_details', 'save-account-details-nonce' ); ?>

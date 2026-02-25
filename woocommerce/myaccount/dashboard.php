@@ -6,12 +6,6 @@
  *
  * This template can be overridden by copying it to yourtheme/woocommerce/myaccount/dashboard.php.
  *
- * HOWEVER, on occasion WooCommerce will need to update template files and you
- * (the theme developer) will need to copy the new files to your theme to
- * maintain compatibility. We try to do this as little as possible, but it does
- * happen. When this occurs the version of the template file will be bumped and
- * the readme will list any important changes.
- *
  * @see     https://woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
  * @version 4.4.0
@@ -75,6 +69,16 @@ if ( function_exists( 'get_field' ) ) {
 		esc_url( wc_get_endpoint_url( 'orders' ) ),
 		esc_url( wc_get_endpoint_url( 'edit-address' ) ),
 		esc_url( wc_get_endpoint_url( 'edit-account' ) )
+	);
+	?>
+</p>
+
+<p class="lost_password">
+	<?php
+	printf(
+		/* translators: %s: reset password URL */
+		wp_kses( __( 'Need to change your password? <a href="%s">Reset your password</a>.', 'elevator' ), $allowed_html ),
+		esc_url( wc_get_endpoint_url( 'edit-account' ) . '#password' )
 	);
 	?>
 </p>
