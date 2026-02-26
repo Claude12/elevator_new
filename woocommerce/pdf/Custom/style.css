@@ -1,7 +1,7 @@
 /* Main Body */
 @page {
 	margin-top: 1cm;
-	margin-bottom: 3cm;
+	margin-bottom: 4cm;
 	margin-left: 2cm;
 	margin-right: 2cm;
 	footer: docFooter;
@@ -236,7 +236,7 @@ table.notes-totals {
 	overflow-wrap: anywhere;
 }
 
-/* In Dompdf, '.wc-item-meta' is applied to a 'ul' element, whereas with the mPDF extension, it's a 'div' instead. For more details, refer to 'wpo_wcpdf_mpdf_modify_html()'. */
+/* In Dompdf, '.wc-item-meta' is applied to a 'ul' element, whereas with the mPDF extension, it's a 'div' instead. For more details, refer to 'wpo_wcpdf_modify_html()'. */
 .wc-item-meta {
 	margin: 0;
 }
@@ -309,10 +309,10 @@ table.totals tr.payment_method {
 /* mPDF footer styles are hooked via wpo_wcpdf_mpdf_premium_style_overrides() */
 #footer {
 	position: absolute;
-	bottom: -2cm;
+	bottom: -3cm;
 	left: 0;
 	right: 0;
-	height: 2cm; /* if you change the footer height, don't forget to change the bottom (=negative height) and the @page margin-bottom as well! */
+	height: 3cm; /* if you change the footer height, don't forget to change the bottom (=negative height) and the @page margin-bottom as well! */
 	text-align: center;
 	border-top: 0.1mm solid gray;
 	margin-bottom: 0;

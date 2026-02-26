@@ -11,8 +11,8 @@ $packed_by     = $this->order->get_meta( 'packed_by' );
 
 $completed     = $this->order->get_date_completed();
 $despatch_date = $completed
-    ? $completed->date_i18n( get_option( 'date_format' ) )
-    : wp_date( get_option( 'date_format' ) );
+	? $completed->date_i18n( get_option( 'date_format' ) )
+	: wp_date( get_option( 'date_format' ) );
 
 $has_despatch_info = ( $num_packages || $total_weight || $courier || $packed_by );
 ?>
@@ -49,7 +49,7 @@ $has_despatch_info = ( $num_packages || $total_weight || $courier || $packed_by 
 
 <?php do_action( 'wpo_wcpdf_before_document_label', $this->get_type(), $this->order ); ?>
 <?php if ( $this->has_header_logo() ) : ?>
-	<h1 class="document-type-label"><?php $this->title(); ?></h1>
+	<h1 class="document-type-label">DELIVERY NOTE</h1>
 <?php endif; ?>
 <?php do_action( 'wpo_wcpdf_after_document_label', $this->get_type(), $this->order ); ?>
 
@@ -188,12 +188,12 @@ $has_despatch_info = ( $num_packages || $total_weight || $courier || $packed_by 
 <?php endif; ?>
 <?php do_action( 'wpo_wcpdf_after_customer_notes', $this->get_type(), $this->order ); ?>
 
-<?php if ( $this->get_footer() ) : ?>
-	<htmlpagefooter name="docFooter">
-		<div id="footer">
-			<?php $this->footer(); ?>
-		</div>
-	</htmlpagefooter>
-<?php endif; ?>
+<htmlpagefooter name="docFooter">
+	<div id="footer">
+		<p>Many thanks for your support and valued Purchase Order. For immediate personal attention please phone 0116 266 2241</p>
+		<p>Title to the goods received remains with Elevator Equipment Limited until full payment for them is satisfactorily completed.</p>
+		<p>VAT No. GB794864268 &nbsp;&nbsp; EORI No. GB794864268000 &nbsp;&nbsp; REG No. 4398327 &nbsp;&nbsp; sales@elevatorequipment.co.uk</p>
+	</div>
+</htmlpagefooter>
 
 <?php do_action( 'wpo_wcpdf_after_document', $this->get_type(), $this->order ); ?>
