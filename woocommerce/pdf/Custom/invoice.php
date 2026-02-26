@@ -1,4 +1,9 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
+
+<?php
+// ── Pull custom meta ──────────────────────────────────────────────────────────
+$po_number = $this->order->get_meta( 'additional_purchase_order' );
+?>
 
 <?php do_action( 'wpo_wcpdf_before_document', $this->get_type(), $this->order ); ?>
 
@@ -34,11 +39,9 @@
 </table>
 
 <?php do_action( 'wpo_wcpdf_before_document_label', $this->get_type(), $this->order ); ?>
-
 <?php if ( $this->has_header_logo() ) : ?>
 	<h1 class="document-type-label"><?php $this->title(); ?></h1>
 <?php endif; ?>
-
 <?php do_action( 'wpo_wcpdf_after_document_label', $this->get_type(), $this->order ); ?>
 
 <table class="order-data-addresses">
@@ -94,6 +97,12 @@
 					<th><?php $this->order_date_title(); ?></th>
 					<td><?php $this->order_date(); ?></td>
 				</tr>
+				<?php if ( $po_number ) : ?>
+				<tr class="purchase-order">
+					<th><?php esc_html_e( 'Purchase Order No.', 'elevator' ); ?></th>
+					<td><?php echo esc_html( $po_number ); ?></td>
+				</tr>
+				<?php endif; ?>
 				<?php if ( $this->get_payment_method() ) : ?>
 					<tr class="payment-method">
 						<th><?php $this->payment_method_title(); ?></th>
@@ -129,11 +138,9 @@
 						<?php if ( ! empty( $item['weight'] ) ) : ?>
 							<p class="weight"><span class="label"><?php $this->weight_title(); ?></span> <?php echo esc_attr( $item['weight'] ); ?><?php echo esc_attr( get_option( 'woocommerce_weight_unit' ) ); ?></p>
 						<?php endif; ?>
-						<!-- ul.wc-item-meta -->
 						<?php if ( ! empty( $item['meta'] ) ) : ?>
 							<?php echo wp_kses_post( $item['meta'] ); ?>
 						<?php endif; ?>
-						<!-- / ul.wc-item-meta -->
 					</div>
 					<?php do_action( 'wpo_wcpdf_after_item_meta', $this->get_type(), $item, $this->order ); ?>
 				</td>
@@ -186,13 +193,11 @@
 <div class="bottom-spacer"></div>
 
 <?php if ( $this->get_footer() ) : ?>
-	<htmlpagefooter name="docFooter"><!-- required for mPDF engine -->
+	<htmlpagefooter name="docFooter">
 		<div id="footer">
-			<!-- hook available: wpo_wcpdf_before_footer -->
 			<?php $this->footer(); ?>
-			<!-- hook available: wpo_wcpdf_after_footer -->
 		</div>
-	</htmlpagefooter><!-- required for mPDF engine -->
+	</htmlpagefooter>
 <?php endif; ?>
 
 <?php do_action( 'wpo_wcpdf_after_document', $this->get_type(), $this->order ); ?>

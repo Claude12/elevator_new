@@ -1,4 +1,21 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly ?>
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
+
+<?php
+// ── Pull custom meta ──────────────────────────────────────────────────────────
+$order_id      = $this->order->get_id();
+$po_number     = $this->order->get_meta( 'additional_purchase_order' );
+$num_packages  = $this->order->get_meta( 'number_of_packages' );
+$total_weight  = $this->order->get_meta( 'total_weight' );
+$courier       = $this->order->get_meta( 'courier' );
+$packed_by     = $this->order->get_meta( 'packed_by' );
+
+$completed     = $this->order->get_date_completed();
+$despatch_date = $completed
+    ? $completed->date_i18n( get_option( 'date_format' ) )
+    : wp_date( get_option( 'date_format' ) );
+
+$has_despatch_info = ( $num_packages || $total_weight || $courier || $packed_by );
+?>
 
 <?php do_action( 'wpo_wcpdf_before_document', $this->get_type(), $this->order ); ?>
 
@@ -20,30 +37,27 @@
 			<?php do_action( 'wpo_wcpdf_before_shop_address', $this->get_type(), $this->order ); ?>
 			<div class="shop-address"><?php $this->shop_address(); ?></div>
 			<?php do_action( 'wpo_wcpdf_after_shop_address', $this->get_type(), $this->order ); ?>
-			<?php do_action( 'wpo_wcpdf_before_shop_phone_number', $this->get_type(), $this->order ); ?>
 			<?php if ( ! empty( $this->get_shop_phone_number() ) ) : ?>
 				<div class="shop-phone-number"><?php $this->shop_phone_number(); ?></div>
 			<?php endif; ?>
-			<?php do_action( 'wpo_wcpdf_after_shop_phone_number', $this->get_type(), $this->order ); ?>
 			<?php if ( ! empty( $this->get_shop_email_address() ) ) : ?>
 				<div class="shop-email-address"><?php $this->shop_email_address(); ?></div>
 			<?php endif; ?>
-			<?php do_action( 'wpo_wcpdf_after_shop_email_address', $this->get_type(), $this->order ); ?>
 		</td>
 	</tr>
 </table>
 
 <?php do_action( 'wpo_wcpdf_before_document_label', $this->get_type(), $this->order ); ?>
-
 <?php if ( $this->has_header_logo() ) : ?>
 	<h1 class="document-type-label"><?php $this->title(); ?></h1>
 <?php endif; ?>
-
 <?php do_action( 'wpo_wcpdf_after_document_label', $this->get_type(), $this->order ); ?>
 
 <table class="order-data-addresses">
 	<tr>
+		<!-- DESPATCH TO -->
 		<td class="address shipping-address">
+			<h3><?php esc_html_e( 'Despatch To', 'elevator' ); ?></h3>
 			<?php do_action( 'wpo_wcpdf_before_shipping_address', $this->get_type(), $this->order ); ?>
 			<p><?php $this->shipping_address(); ?></p>
 			<?php do_action( 'wpo_wcpdf_after_shipping_address', $this->get_type(), $this->order ); ?>
@@ -54,6 +68,8 @@
 				<div class="shipping-phone"><?php $this->shipping_phone( ! $this->show_billing_address() ); ?></div>
 			<?php endif; ?>
 		</td>
+
+		<!-- BILLING ADDRESS (if different) -->
 		<td class="address billing-address">
 			<?php if ( $this->show_billing_address() ) : ?>
 				<h3><?php $this->billing_address_title(); ?></h3>
@@ -65,13 +81,25 @@
 				<?php endif; ?>
 			<?php endif; ?>
 		</td>
+
+		<!-- ORDER META -->
 		<td class="order-data">
 			<table>
 				<?php do_action( 'wpo_wcpdf_before_order_data', $this->get_type(), $this->order ); ?>
 				<tr class="order-number">
-					<th><?php $this->order_number_title(); ?></th>
+					<th><?php esc_html_e( 'Delivery Note No.', 'elevator' ); ?></th>
 					<td><?php $this->order_number(); ?></td>
 				</tr>
+				<tr class="despatch-date">
+					<th><?php esc_html_e( 'Despatch Date', 'elevator' ); ?></th>
+					<td><?php echo esc_html( $despatch_date ); ?></td>
+				</tr>
+				<?php if ( $po_number ) : ?>
+				<tr class="purchase-order">
+					<th><?php esc_html_e( 'Purchase Order No.', 'elevator' ); ?></th>
+					<td><?php echo esc_html( $po_number ); ?></td>
+				</tr>
+				<?php endif; ?>
 				<tr class="order-date">
 					<th><?php $this->order_date_title(); ?></th>
 					<td><?php $this->order_date(); ?></td>
@@ -88,38 +116,60 @@
 	</tr>
 </table>
 
+<?php if ( $has_despatch_info ) : ?>
+<!-- DESPATCH INFORMATION BAR -->
+<table class="despatch-info">
+	<tr>
+		<?php if ( $num_packages ) : ?>
+		<td>
+			<span class="label"><?php esc_html_e( 'No. of Packages', 'elevator' ); ?>:</span>
+			<?php echo esc_html( $num_packages ); ?>
+		</td>
+		<?php endif; ?>
+		<?php if ( $total_weight ) : ?>
+		<td>
+			<span class="label"><?php esc_html_e( 'Total Weight', 'elevator' ); ?>:</span>
+			<?php echo esc_html( $total_weight ); ?>
+		</td>
+		<?php endif; ?>
+		<?php if ( $courier ) : ?>
+		<td>
+			<span class="label"><?php esc_html_e( 'Courier', 'elevator' ); ?>:</span>
+			<?php echo esc_html( $courier ); ?>
+		</td>
+		<?php endif; ?>
+		<?php if ( $packed_by ) : ?>
+		<td>
+			<span class="label"><?php esc_html_e( 'Packed By', 'elevator' ); ?>:</span>
+			<?php echo esc_html( $packed_by ); ?>
+		</td>
+		<?php endif; ?>
+	</tr>
+</table>
+<?php endif; ?>
+
 <?php do_action( 'wpo_wcpdf_before_order_details', $this->get_type(), $this->order ); ?>
 
+<!-- ITEMS TABLE: Product Code | Qty | Description -->
 <table class="order-details">
 	<thead>
 		<tr>
-			<?php foreach ( wpo_wcpdf_get_simple_template_default_table_headers( $this ) as $column_class => $column_title ) : ?>
-				<th class="<?php echo esc_attr( $column_class ); ?>"><?php echo esc_html( $column_title ); ?></th>
-			<?php endforeach; ?>
+			<th class="product-code"><?php esc_html_e( 'Product Code', 'elevator' ); ?></th>
+			<th class="quantity"><?php esc_html_e( 'Qty', 'elevator' ); ?></th>
+			<th class="product"><?php esc_html_e( 'Description', 'elevator' ); ?></th>
 		</tr>
 	</thead>
 	<tbody>
 		<?php foreach ( $this->get_order_items() as $item_id => $item ) : ?>
-			<tr class="<?php echo esc_html( $item['row_class'] ); ?>">
+			<tr class="<?php echo esc_attr( $item['row_class'] ); ?>">
+				<td class="product-code"><?php echo ! empty( $item['sku'] ) ? esc_html( $item['sku'] ) : '&mdash;'; ?></td>
+				<td class="quantity"><?php echo esc_html( $item['quantity'] ); ?></td>
 				<td class="product">
 					<p class="item-name"><?php echo esc_html( $item['name'] ); ?></p>
-					<?php do_action( 'wpo_wcpdf_before_item_meta', $this->get_type(), $item, $this->order ); ?>
-					<div class="item-meta">
-						<?php if ( ! empty( $item['sku'] ) ) : ?>
-							<p class="sku"><span class="label"><?php $this->sku_title(); ?></span> <?php echo esc_attr( $item['sku'] ); ?></p>
-						<?php endif; ?>
-						<?php if ( ! empty( $item['weight'] ) ) : ?>
-							<p class="weight"><span class="label"><?php $this->weight_title(); ?></span> <?php echo esc_attr( $item['weight'] ); ?><?php echo esc_attr( get_option( 'woocommerce_weight_unit' ) ); ?></p>
-						<?php endif; ?>
-						<!-- ul.wc-item-meta -->
-						<?php if ( ! empty( $item['meta'] ) ) : ?>
-							<?php echo wp_kses_post( $item['meta'] ); ?>
-						<?php endif; ?>
-						<!-- / ul.wc-item-meta -->
-					</div>
-					<?php do_action( 'wpo_wcpdf_after_item_meta', $this->get_type(), $item, $this->order ); ?>
+					<?php if ( ! empty( $item['meta'] ) ) : ?>
+						<div class="item-meta"><?php echo wp_kses_post( $item['meta'] ); ?></div>
+					<?php endif; ?>
 				</td>
-				<td class="quantity"><?php echo esc_html( $item['quantity'] ); ?></td>
 			</tr>
 		<?php endforeach; ?>
 	</tbody>
@@ -132,20 +182,18 @@
 <?php do_action( 'wpo_wcpdf_before_customer_notes', $this->get_type(), $this->order ); ?>
 <?php if ( $this->get_shipping_notes() ) : ?>
 	<div class="customer-notes">
-		<h3><?php $this->customer_notes_title() ?></h3>
+		<h3><?php $this->customer_notes_title(); ?></h3>
 		<?php $this->shipping_notes(); ?>
 	</div>
 <?php endif; ?>
 <?php do_action( 'wpo_wcpdf_after_customer_notes', $this->get_type(), $this->order ); ?>
 
 <?php if ( $this->get_footer() ) : ?>
-	<htmlpagefooter name="docFooter"><!-- required for mPDF engine -->
+	<htmlpagefooter name="docFooter">
 		<div id="footer">
-			<!-- hook available: wpo_wcpdf_before_footer -->
 			<?php $this->footer(); ?>
-			<!-- hook available: wpo_wcpdf_after_footer -->
 		</div>
-	</htmlpagefooter><!-- required for mPDF engine -->
+	</htmlpagefooter>
 <?php endif; ?>
 
 <?php do_action( 'wpo_wcpdf_after_document', $this->get_type(), $this->order ); ?>

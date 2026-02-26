@@ -334,3 +334,25 @@ table.totals tr.payment_method {
 	margin-top: 2mm;
 	line-height: 1;
 }
+
+/* Despatch information bar (packing slip) */
+table.despatch-info {
+	width: 100%;
+	margin-bottom: 6mm;
+	border: 1px solid #ccc;
+	background: #f9f9f9;
+}
+
+table.despatch-info td {
+	padding: 2mm 3mm;
+	font-size: 8.5pt;
+	border: 0;
+	white-space: nowrap;
+}
+
+/* Product Code column in packing slip items table */
+.order-details th.product-code,
+.order-details td.product-code {
+	width: 18%;
+	white-space: nowrap;
+}

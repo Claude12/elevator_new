@@ -2,13 +2,12 @@
 /**
  * Order Delivery Fields
  *
- * Adds editable delivery fields to the WooCommerce admin order screen:
- *  - Number of Packages
- *  - Total Weight
- *  - Courier
- *  - Packed By
- *
- * These are saved as order meta and pulled into the delivery note PDF template.
+ * Displays delivery meta fields on the WooCommerce admin order screen (read-only).
+ * Fields are set via ACF on the order:
+ *  - number_of_packages
+ *  - total_weight
+ *  - courier
+ *  - packed_by
  *
  * @package elevator
  */
@@ -18,31 +17,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Display delivery fields in the admin order billing section.
+ * Display delivery fields in the admin order screen — read-only.
  *
  * @param WC_Order $order The order object.
  */
 function elevator_delivery_fields_display( WC_Order $order ) {
     $fields = elevator_delivery_field_definitions();
+
+    // Only show the section if at least one field has a value.
+    $has_values = false;
+    foreach ( $fields as $key => $label ) {
+        if ( $order->get_meta( $key ) !== '' ) {
+            $has_values = true;
+            break;
+        }
+    }
+
+    if ( ! $has_values ) {
+        return;
+    }
     ?>
     <div class="elevator-delivery-fields" style="margin-top:12px;">
-        <h4 style="margin:0 0 8px;padding:8px 0 4px;border-top:1px solid #eee;color:#154ed3;">
+        <h4 style="margin:0 0 8px;padding:8px 0 4px;border-top:1px solid #eee;color:#154ed3;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;">
             <?php esc_html_e( 'Despatch Information', 'elevator' ); ?>
         </h4>
         <?php foreach ( $fields as $key => $label ) :
             $value = $order->get_meta( $key );
+            if ( $value === '' ) continue;
         ?>
-        <p style="margin:0 0 8px;">
-            <label for="elevator_<?php echo esc_attr( $key ); ?>" style="display:block;font-weight:600;font-size:12px;margin-bottom:2px;">
-                <?php echo esc_html( $label ); ?>
-            </label>
-            <input
-                type="text"
-                id="elevator_<?php echo esc_attr( $key ); ?>"
-                name="elevator_<?php echo esc_attr( $key ); ?>"
-                value="<?php echo esc_attr( $value ); ?>"
-                style="width:100%;padding:4px 6px;"
-            />
+        <p style="margin:0 0 6px;font-size:12px;">
+            <span style="font-weight:600;color:#555;"><?php echo esc_html( $label ); ?>:</span>
+            <?php echo esc_html( $value ); ?>
         </p>
         <?php endforeach; ?>
     </div>
@@ -51,34 +56,7 @@ function elevator_delivery_fields_display( WC_Order $order ) {
 add_action( 'woocommerce_admin_order_data_after_billing_address', 'elevator_delivery_fields_display', 20 );
 
 /**
- * Save delivery fields when the admin order is saved.
- *
- * @param int $order_id The order ID being saved.
- */
-function elevator_delivery_fields_save( int $order_id ) {
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- WooCommerce handles nonce verification.
-    $fields = elevator_delivery_field_definitions();
-
-    $order = wc_get_order( $order_id );
-    if ( ! $order ) {
-        return;
-    }
-
-    foreach ( $fields as $key => $label ) {
-        $post_key = 'elevator_' . $key;
-        if ( isset( $_POST[ $post_key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-            $value = sanitize_text_field( wp_unslash( $_POST[ $post_key ] ) );
-            $order->update_meta_data( $key, $value );
-        }
-    }
-
-    $order->save();
-}
-add_action( 'woocommerce_process_shop_order_meta', 'elevator_delivery_fields_save' );
-
-/**
  * Field definitions — meta key => label.
- * Single source of truth used by both display and save functions.
  *
  * @return array
  */
