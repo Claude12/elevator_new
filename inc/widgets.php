@@ -17,25 +17,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 function elevator_widgets_init() {
 	register_sidebar(
 		array(
-			'name'          => esc_html__( 'Sidebar', 'elevator' ),
-			'id'            => 'sidebar-1',
-			'description'   => esc_html__( 'Add widgets here.', 'elevator' ),
-			'before_widget' => '<section id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</section>',
-			'before_title'  => '<h2 class="widget-title">',
-			'after_title'   => '</h2>',
+			'name'          => esc_html__( 'Primary Sidebar', 'elevator' ),
+			'id'            => 'primary-sidebar',
+			'description'   => esc_html__( 'Main sidebar that appears on the right.', 'elevator' ),
+			'before_widget' => '<div class="widget %2$s">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
 		)
 	);
 
 	register_sidebar(
 		array(
 			'name'          => esc_html__( 'News Sidebar', 'elevator' ),
-			'id'            => 'sidebar-news',
+			'id'            => 'news-sidebar',
 			'description'   => esc_html__( 'Sidebar displayed on news/blog pages.', 'elevator' ),
-			'before_widget' => '<section id="%1$s" class="widget %2$s">',
-			'after_widget'  => '</section>',
-			'before_title'  => '<h2 class="widget-title">',
-			'after_title'   => '</h2>',
+			'before_widget' => '<div class="widget %2$s">',
+			'after_widget'  => '</div>',
+			'before_title'  => '<h3 class="widget-title">',
+			'after_title'   => '</h3>',
 		)
 	);
 }
