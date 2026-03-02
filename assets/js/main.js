@@ -1,22 +1,39 @@
 jQuery(document).ready(function ($) {
-
   // =============================================
   // Mobile Search Toggle
   // =============================================
-  $("#mobile-search-toggle").on("click", function () {
-    $(".woo-search-popup").fadeIn(200);
+  const toggleBtn = document.getElementById("hdr-mobile-search-toggle");
+  const drawer = document.getElementById("hdr-search-drawer");
+  const closeBtn = document.getElementById("hdr-search-drawer-close");
+  const mobileInput = document.getElementById("hdr-search-mobile");
+
+  if (!toggleBtn || !drawer) return;
+
+  function openDrawer() {
+    drawer.classList.add("is-open");
+    drawer.setAttribute("aria-hidden", "false");
+    toggleBtn.setAttribute("aria-expanded", "true");
+    if (mobileInput) mobileInput.focus();
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove("is-open");
+    drawer.setAttribute("aria-hidden", "true");
+    toggleBtn.setAttribute("aria-expanded", "false");
+  }
+
+  toggleBtn.addEventListener("click", openDrawer);
+  if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
+
+  // Close on backdrop click
+  drawer.addEventListener("click", function (e) {
+    if (e.target === drawer) closeDrawer();
   });
 
-  $(".woo-search-popup__close").on("click", function () {
-    $(".woo-search-popup").fadeOut(200);
-  });
-
-  $(document).on("click", function (e) {
-    if (
-      $(e.target).closest(".woo-search-popup__inner, #mobile-search-toggle")
-        .length === 0
-    ) {
-      $(".woo-search-popup").fadeOut(200);
+  // Close on Escape
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && drawer.classList.contains("is-open")) {
+      closeDrawer();
     }
   });
 
