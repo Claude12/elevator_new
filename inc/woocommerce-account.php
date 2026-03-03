@@ -10,29 +10,38 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Print Order button on order details page.
+ * Print Order & Repeat Order buttons on order details page, wrapped in one div.
  *
  * @param WC_Order $order Order object.
  */
-function elevator_add_print_order_button( $order ) {
+function elevator_add_order_action_buttons( $order ) {
 	if ( ! is_account_page() ) {
 		return;
 	}
 
-	$order_id   = $order->get_id();
-	$print_url  = wp_nonce_url(
+	$order_id = $order->get_id();
+
+	$print_url = wp_nonce_url(
 		add_query_arg( 'print-order', $order_id, home_url() ),
 		'elevator_print_order_' . $order_id
 	);
+
+	$repeat_url = wp_nonce_url(
+		add_query_arg( 'repeat_order', $order_id, wc_get_cart_url() ),
+		'repeat_order_' . $order_id
+	);
 	?>
 	<div class="woocommerce-order-actions">
-		<a href="<?php echo esc_url( $print_url ); ?>" target="_blank" class="button">
+		<a href="<?php echo esc_url( $print_url ); ?>" target="_blank" class="button btn-action">
 			<?php esc_html_e( 'Print Order', 'elevator' ); ?>
+		</a>
+		<a href="<?php echo esc_url( $repeat_url ); ?>" class="button">
+			<?php esc_html_e( 'Repeat Order', 'elevator' ); ?>
 		</a>
 	</div>
 	<?php
 }
-add_action( 'woocommerce_order_details_after_order_table', 'elevator_add_print_order_button' );
+add_action( 'woocommerce_order_details_after_order_table', 'elevator_add_order_action_buttons' );
 
 /**
  * Handle print order page.
@@ -67,31 +76,6 @@ function elevator_handle_print_order_page() {
 	}
 }
 add_action( 'template_redirect', 'elevator_handle_print_order_page' );
-
-/**
- * Repeat Order button on order details page.
- *
- * @param WC_Order $order Order object.
- */
-function elevator_add_repeat_order_button( $order ) {
-	if ( ! is_account_page() ) {
-		return;
-	}
-
-	$order_id   = $order->get_id();
-	$repeat_url = wp_nonce_url(
-		add_query_arg( 'repeat_order', $order_id, wc_get_cart_url() ),
-		'repeat_order_' . $order_id
-	);
-	?>
-	<div class="woocommerce-order-actions">
-		<a href="<?php echo esc_url( $repeat_url ); ?>" class="button">
-			<?php esc_html_e( 'Repeat Order', 'elevator' ); ?>
-		</a>
-	</div>
-	<?php
-}
-add_action( 'woocommerce_order_details_after_order_table', 'elevator_add_repeat_order_button' );
 
 /**
  * Handle repeat order — supports both simple and variable products.

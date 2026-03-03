@@ -106,4 +106,31 @@ jQuery(document).ready(function ($) {
           .replace(/Shipping Address/g, "Branch Address");
       });
   }
+
+  // order actions
+
+  var $orderAgain = $(".order-again");
+
+  if ($orderAgain.length && $(".woocommerce-order-actions").length) {
+    // Move the <a> into the actions div, then remove the empty <p>
+    $orderAgain.find("a").appendTo(".woocommerce-order-actions");
+    $orderAgain.remove();
+  }
+
+  // quote colors
+  $(".my_account_quotes tbody tr").each(function () {
+    const status = $(this).find('td[data-title="Status"]').text().trim();
+    if (status === "Pending") {
+      $(this).addClass("status-pending");
+    }
+    if (status === "In Process") {
+      $(this).addClass("status-in-process");
+    }
+    if (status === "Converted to Order") {
+      $(this).addClass("status-converted");
+    }
+    if ($(this).find(".quote-convert-to-order").length) {
+      $(this).addClass("has-convert-button");
+    }
+  });
 });

@@ -22,19 +22,6 @@ if ( $has_top_cats || $has_bottom_cats ) : ?>
 				<h2 class="section-title"><?php echo esc_html( get_field( 'cat_heading', 'option' ) ); ?></h2>
 				<div class="d-flex module justify-content-between align-items-center">
 					<p class="title-intro"><?php echo esc_html( get_field( 'cat_support_text', 'option' ) ); ?></p>
-
-					<div class="woo-search">
-						<form role="search" method="get" class="woocommerce-product-search" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-							<label class="screen-reader-text" for="woocommerce-product-search-field-cat">
-								<?php esc_html_e( 'Search for:', 'elevator' ); ?>
-							</label>
-							<input type="search" id="woocommerce-product-search-field-cat" class="search-field"
-								placeholder="<?php esc_attr_e( 'What are you looking for?', 'elevator' ); ?>"
-								value="<?php echo esc_attr( get_search_query() ); ?>" name="s" />
-							<button type="submit" class="search-submit"><i class="fas fa-search"></i></button>
-							<input type="hidden" name="post_type" value="product" />
-						</form>
-					</div>
 				</div>
 			</div>
 
