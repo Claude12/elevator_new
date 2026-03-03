@@ -2159,16 +2159,6 @@ footer .add-info-wrapper p a:hover {
 
 /* Category Page */
 
-.archive.woocommerce-page #primary {
-  width: 75%;
-  order: 2;
-}
-.archive.woocommerce-page #sidebar {
-  width: 25%;
-  float: left;
-  order: 1;
-}
-
 #primary .products li a.woocommerce-LoopProduct-link {
   background: #f2f2f2;
   float: left;
@@ -2233,10 +2223,6 @@ footer .add-info-wrapper p a:hover {
 }
 
 /* Sidebar */
-
-#sidebar {
-  padding: 20px 20px 20px 0;
-}
 #sidebar .sidebar-wrap {
   background: #f2f2f2;
   border-radius: 20px;
@@ -4136,7 +4122,8 @@ form.woocommerce-ordering select.orderby {
 }
 @media only screen and (max-width: 1200px) {
   .woo-search {
-    min-width: 260px;
+    min-width: 200px;
+    margin-left: 24px;
   }
   #header .header__logo-wrapper a img {
     height: 80px;
@@ -5501,7 +5488,6 @@ body:not(.logged-in) .woocommerce .product-price {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 1500px;
   margin: 0 auto;
   padding: 1rem 1.2rem;
 }
@@ -5817,4 +5803,65 @@ input[type="search"]:focus {
 
 .navbar-expand-md {
   justify-content: flex-end !important;
+}
+
+/* Sidebar Left + Content Right Layout */
+.product-category-layout {
+  display: flex;
+  flex-direction: row; /* sidebar first (left), content second (right) */
+  align-items: flex-start;
+  gap: 30px;
+}
+
+.product-category-sidebar {
+  width: 25%; /* fixed sidebar width — adjust as needed */
+  flex-shrink: 0;
+}
+
+.product-category-content {
+  flex: 1; /* takes up all remaining space */
+  min-width: 0; /* prevents overflow issues */
+}
+
+.woocommerce .woocommerce-result-count {
+  margin-top: 11px;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 768px) {
+  .product-category-layout {
+    flex-direction: column;
+  }
+
+  .product-category-sidebar {
+    width: 100%;
+    display: none;
+  }
+}
+
+/* Cards */
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.woocommerce:where(body:not(.woocommerce-uses-block-theme))
+  ul.products
+  li.product
+  .price {
+  padding-left: 24px;
+  padding-right: 24px;
+  font-size: 1rem;
+}
+
+.tinv-wraper.tinv-wishlist {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 24px;
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-category__title {
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-bottom: 24px;
 }

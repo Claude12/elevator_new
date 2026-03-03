@@ -60,109 +60,114 @@ if (! defined('ABSPATH')) {
 		$login_url          = class_exists('WooCommerce') ? esc_url(wc_get_page_permalink('myaccount')) : '';
 		?>
 
-		<div class="site-header__inner">
+		<div class="container">
+			<div class="row">
 
-			<!-- Logo -->
-			<div class="site-header__logo">
-				<?php if ($logo && is_array($logo)) : ?>
-					<a href="<?php echo esc_url(home_url('/')); ?>" class="site-header__logo-link">
-						<img src="<?php echo esc_url($logo['url']); ?>"
-							alt="<?php echo esc_attr($logo['alt']); ?>"
-							class="site-header__logo-img" />
-					</a>
-				<?php endif; ?>
-			</div>
+				<div class="site-header__inner">
 
-			<div class="site-header__inner-actions">
-
-				<!-- Actions -->
-				<div class="site-header__actions">
-
-					<!-- Mobile Search Toggle -->
-					<button class="hdr-action hdr-action--search-toggle site-header__actions-mobile-only"
-						id="hdr-mobile-search-toggle"
-						aria-label="<?php esc_attr_e('Open search', 'elevator'); ?>"
-						aria-expanded="false">
-						<i class="fas fa-search"></i>
-					</button>
-
-					<!-- Login / My Account -->
-					<?php if (class_exists('WooCommerce')) : ?>
-						<?php if (is_user_logged_in()) : ?>
-							<a class="hdr-action hdr-action--account"
-								href="<?php echo $account_url; ?>"
-								data-tooltip="<?php esc_attr_e('Go to My Account', 'elevator'); ?>">
-								<i class="fas fa-user"></i>
-								<span class="hdr-action__label"><?php esc_html_e('My Account', 'elevator'); ?></span>
-							</a>
-						<?php else : ?>
-							<a class="hdr-action hdr-action--account"
-								href="<?php echo $login_url; ?>"
-								data-tooltip="<?php esc_attr_e('Login', 'elevator'); ?>">
-								<i class="fas fa-user"></i>
-								<span class="hdr-action__label"><?php esc_html_e('Login', 'elevator'); ?></span>
+					<!-- Logo -->
+					<div class="site-header__logo">
+						<?php if ($logo && is_array($logo)) : ?>
+							<a href="<?php echo esc_url(home_url('/')); ?>" class="site-header__logo-link">
+								<img src="<?php echo esc_url($logo['url']); ?>"
+									alt="<?php echo esc_attr($logo['alt']); ?>"
+									class="site-header__logo-img" />
 							</a>
 						<?php endif; ?>
-					<?php endif; ?>
-
-					<!-- Cart / Basket -->
-					<?php if (function_exists('WC')) : ?>
-						<a href="<?php echo esc_url(wc_get_cart_url()); ?>"
-							class="hdr-action hdr-action--cart"
-							data-tooltip="<?php esc_attr_e('View basket', 'elevator'); ?>">
-							<i class="fas fa-shopping-basket"></i>
-							<?php $cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0; ?>
-							<span class="hdr-action__badge<?php echo $cart_count ? '' : ' hdr-action__badge--hidden'; ?>">
-								<?php echo esc_html($cart_count); ?>
-							</span>
-						</a>
-					<?php endif; ?>
-
-					<!-- Quote Button -->
-					<div class="hdr-action hdr-action--quote" data-tooltip="<?php esc_attr_e('Go to quote area', 'elevator'); ?>">
-						<?php echo do_shortcode('[addify-mini-quote]'); ?>
 					</div>
 
-					<!-- Wishlist -->
-					<a class="hdr-action hdr-action--wishlist"
-						href="<?php echo esc_url(home_url('/wishlist')); ?>"
-						data-tooltip="<?php esc_attr_e('Your Favourites list', 'elevator'); ?>">
-						<i class="fa-solid fa-heart"></i>
-					</a>
+					<div class="site-header__inner-actions">
 
-					<!-- Phone -->
-					<a class="hdr-action hdr-action--phone"
-						href="tel:<?php echo esc_attr($header_number); ?>"
-						data-tooltip="<?php esc_attr_e('Call us', 'elevator'); ?>">
-						<i class="fas fa-phone-alt"></i>
-					</a>
+						<!-- Actions -->
+						<div class="site-header__actions">
 
-					<!-- Email — hidden on mobile -->
-					<?php if ($header_contact_link) : ?>
-						<a class="hdr-action hdr-action--email site-header__actions-desktop-only"
-							href="<?php echo esc_url($header_contact_link); ?>"
-							data-tooltip="<?php esc_attr_e('Send us a message', 'elevator'); ?>">
-							<i class="fas fa-envelope"></i>
-						</a>
-					<?php endif; ?>
+							<!-- Mobile Search Toggle -->
+							<button class="hdr-action hdr-action--search-toggle site-header__actions-mobile-only"
+								id="hdr-mobile-search-toggle"
+								aria-label="<?php esc_attr_e('Open search', 'elevator'); ?>"
+								aria-expanded="false">
+								<i class="fas fa-search"></i>
+							</button>
 
-				</div><!-- .site-header__actions -->
+							<!-- Login / My Account -->
+							<?php if (class_exists('WooCommerce')) : ?>
+								<?php if (is_user_logged_in()) : ?>
+									<a class="hdr-action hdr-action--account"
+										href="<?php echo $account_url; ?>"
+										data-tooltip="<?php esc_attr_e('Go to My Account', 'elevator'); ?>">
+										<i class="fas fa-user"></i>
+										<span class="hdr-action__label"><?php esc_html_e('My Account', 'elevator'); ?></span>
+									</a>
+								<?php else : ?>
+									<a class="hdr-action hdr-action--account"
+										href="<?php echo $login_url; ?>"
+										data-tooltip="<?php esc_attr_e('Login', 'elevator'); ?>">
+										<i class="fas fa-user"></i>
+										<span class="hdr-action__label"><?php esc_html_e('Login', 'elevator'); ?></span>
+									</a>
+								<?php endif; ?>
+							<?php endif; ?>
+
+							<!-- Cart / Basket -->
+							<?php if (function_exists('WC')) : ?>
+								<a href="<?php echo esc_url(wc_get_cart_url()); ?>"
+									class="hdr-action hdr-action--cart"
+									data-tooltip="<?php esc_attr_e('View basket', 'elevator'); ?>">
+									<i class="fas fa-shopping-basket"></i>
+									<?php $cart_count = WC()->cart ? WC()->cart->get_cart_contents_count() : 0; ?>
+									<span class="hdr-action__badge<?php echo $cart_count ? '' : ' hdr-action__badge--hidden'; ?>">
+										<?php echo esc_html($cart_count); ?>
+									</span>
+								</a>
+							<?php endif; ?>
+
+							<!-- Quote Button -->
+							<div class="hdr-action hdr-action--quote" data-tooltip="<?php esc_attr_e('Go to quote area', 'elevator'); ?>">
+								<?php echo do_shortcode('[addify-mini-quote]'); ?>
+							</div>
+
+							<!-- Wishlist -->
+							<a class="hdr-action hdr-action--wishlist"
+								href="<?php echo esc_url(home_url('/wishlist')); ?>"
+								data-tooltip="<?php esc_attr_e('Your Favourites list', 'elevator'); ?>">
+								<i class="fa-solid fa-heart"></i>
+							</a>
+
+							<!-- Phone -->
+							<a class="hdr-action hdr-action--phone"
+								href="tel:<?php echo esc_attr($header_number); ?>"
+								data-tooltip="<?php esc_attr_e('Call us', 'elevator'); ?>">
+								<i class="fas fa-phone-alt"></i>
+							</a>
+
+							<!-- Email — hidden on mobile -->
+							<?php if ($header_contact_link) : ?>
+								<a class="hdr-action hdr-action--email site-header__actions-desktop-only"
+									href="<?php echo esc_url($header_contact_link); ?>"
+									data-tooltip="<?php esc_attr_e('Send us a message', 'elevator'); ?>">
+									<i class="fas fa-envelope"></i>
+								</a>
+							<?php endif; ?>
+
+						</div><!-- .site-header__actions -->
+					</div>
+
+					<!-- Desktop Search -->
+					<div class="woo-search d-block-tablet">
+						<form role="search" method="get" class="woocommerce-product-search" action="<?php echo esc_url(home_url('/')); ?>">
+							<label class="screen-reader-text" for="woocommerce-product-search-field-desktop"><?php esc_html_e('Search for:', 'elevator'); ?></label>
+							<input type="search" id="woocommerce-product-search-field-desktop" class="search-field"
+								placeholder="<?php esc_attr_e('What are you looking for?', 'elevator'); ?>"
+								value="<?php echo esc_attr(get_search_query()); ?>" name="s"
+								style="background: <?php echo esc_attr($bg_color); ?>;" />
+							<button type="submit" class="search-submit"><i class="fas fa-search"></i></button>
+							<input type="hidden" name="post_type" value="product" />
+						</form>
+					</div>
+
+				</div><!-- .site-header__inner -->
 			</div>
-
-			<!-- Desktop Search -->
-			<div class="woo-search d-block-tablet">
-				<form role="search" method="get" class="woocommerce-product-search" action="<?php echo esc_url(home_url('/')); ?>">
-					<label class="screen-reader-text" for="woocommerce-product-search-field-desktop"><?php esc_html_e('Search for:', 'elevator'); ?></label>
-					<input type="search" id="woocommerce-product-search-field-desktop" class="search-field"
-						placeholder="<?php esc_attr_e('What are you looking for?', 'elevator'); ?>"
-						value="<?php echo esc_attr(get_search_query()); ?>" name="s"
-						style="background: <?php echo esc_attr($bg_color); ?>;" />
-					<button type="submit" class="search-submit"><i class="fas fa-search"></i></button>
-					<input type="hidden" name="post_type" value="product" />
-				</form>
-			</div>
-
-		</div><!-- .site-header__inner -->
+		</div>
 
 		<!-- Mobile Search Drawer -->
 		<div class="hdr-search-drawer" id="hdr-search-drawer" aria-hidden="true">

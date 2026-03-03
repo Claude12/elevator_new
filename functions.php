@@ -81,7 +81,7 @@ if ( class_exists( 'WooCommerce' ) ) {
 	require get_template_directory() . '/inc/woocommerce-single-product.php';
 	require get_template_directory() . '/inc/woocommerce-search.php';
 	require get_template_directory() . '/inc/woocommerce-account.php';
-	require get_template_directory() . '/inc/woocommerce-continuous-length.php';
+	// require get_template_directory() . '/inc/woocommerce-continuous-length.php';
 	require get_template_directory() . '/inc/woocommerce-emails.php';
 	require get_template_directory() . '/inc/woocommerce-quote.php';
 	require get_template_directory() . '/inc/woocommerce-quote-po.php';
