@@ -46,7 +46,7 @@
   --color-whatsapp: #25d366;
   --color-whatsapp-dk: #075e54;
   --color-danger: #a00;
-  --color-success: #90EE90;
+  --color-success: #90ee90;
 
   --font-heading: "Open Sans", sans-serif;
   --font-body: "Poppins", sans-serif;
@@ -942,66 +942,6 @@ footer .add-info-wrapper p a:hover {
   max-width: 200px;
 }
 
-.banner-area .swiper-container {
-  padding-bottom: 90px;
-}
-
-.banner-area .swiper-slide a {
-  float: left;
-  border-radius: 20px;
-  box-shadow: 1px 9px 13px rgba(0, 0, 0, 0.3);
-}
-.banner-area .swiper-slide a img {
-  border-radius: 20px 20px 0 0;
-}
-.banner-area .swiper-slide a .info-wrap {
-  background: #f2f2f2;
-  padding: 20px;
-  border-radius: 0 0 20px 20px;
-  text-align: center;
-  float: left;
-  width: 100%;
-  text-decoration: none;
-}
-.banner-area .swiper-slide a .info-wrap h3 {
-  font-size: 14px;
-  min-height: 51px;
-}
-.banner-area .swiper-slide a .info-wrap .primary-button {
-  font-size: 12px;
-  padding: 10px 0px;
-  width: 100%;
-  background: #021338;
-  margin-top: 15px;
-}
-.banner-area .swiper-slide a .info-wrap .primary-button:hover {
-  background: #154ed3;
-}
-
-.banner-area .swiper-button-next,
-.banner-area .swiper-button-prev {
-  top: 90% !important;
-  background: #154ed3;
-  border-radius: 50px;
-  width: 40px !important;
-  height: 40px !important;
-}
-
-.banner-area .swiper-button-prev {
-  left: auto !important;
-  right: 60px !important;
-}
-
-.banner-area .swiper-button-next:after,
-.banner-area .swiper-button-prev:after {
-  font-size: 16px !important;
-  color: #fff;
-}
-
-.banner-area .swiper-slide {
-  padding: 5px;
-}
-
 /*  Banner Image  */
 
 .banner-area .container {
@@ -1062,16 +1002,6 @@ footer .add-info-wrapper p a:hover {
     min-width: 232px;
   }
 }
-
-@media (max-width: 994px) {
-  .banner-area .swiper-container {
-    margin-top: 20px;
-    padding-bottom: 100px;
-  }
-  .banner-area .swiper-slide {
-    padding: 20px;
-  }
-} /*  Close of query 994  */
 
 @media (max-width: 769px) {
   .scroll-to-button {
@@ -4207,9 +4137,7 @@ form.woocommerce-ordering select.orderby {
   a.whatsapp {
     margin-bottom: 20px;
   }
-  .banner-area .swiper-container {
-    margin-top: 20px;
-  }
+
   #usp-module ul {
     padding-bottom: 0px;
   }
@@ -5876,6 +5804,10 @@ input[type="search"]:focus {
   li.product
   .woocommerce-loop-category__title {
   padding: 0 0 12px 0;
+}
+
+.sidebar-wrap a.wishlist_products_counter.top_wishlist-white:before {
+  color: var(--color-primary);
 }
 
 /* Responsive: stack on small screens */
