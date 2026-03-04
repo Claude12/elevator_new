@@ -5820,6 +5820,15 @@ input[type="search"]:focus {
     width: 100%;
     display: none;
   }
+
+  #copyright {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  #footer .p-4 {
+    padding: 0 !important;
+  }
 }
 
 /* Cards */
@@ -5953,4 +5962,12 @@ div.product form.cart .tinvwl_add_to_wishlist_button {
 
 #footer ul {
   margin: 0;
+}
+
+a.scroll-to-button:hover {
+  opacity: 0.7;
+}
+
+a.scroll-to-button:visited {
+  color: var(--color-white);
 }
