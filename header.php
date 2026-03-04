@@ -14,7 +14,7 @@ if (! defined('ABSPATH')) {
 <html <?php language_attributes(); ?>>
 
 <head>
-	<meta charset="<?php bloginfo('charset'); ?>">
+	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -35,6 +35,7 @@ if (! defined('ABSPATH')) {
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e('Skip to content', 'elevator'); ?></a>
 
 	<!-- Background decorative images -->
+	<!-- TODO: These background image paths should ideally be managed via ACF options to avoid hardcoded upload paths. -->
 	<img class="bg bg-strip-1 bg-strip" src="/wp-content/uploads/2025/01/strip-right-1.png" alt="">
 	<img class="bg bg-image-1" src="/wp-content/uploads/2025/03/AdobeStock_65699394-tech-drawing.png" alt="">
 	<img class="bg bg-image-2" src="/wp-content/uploads/2025/03/AdobeStock_65699394-tech-drawing.png" alt="">

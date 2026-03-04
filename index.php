@@ -10,7 +10,7 @@
   <div class="container">
 
     <div class="banner-image">
-      <img src="/wp-content/uploads/2025/02/AI-elevator-2.png" alt="Elevator image created through AI" />
+      <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/AI-elevator-2.png' ); ?>" alt="<?php esc_attr_e( 'Elevator image created through AI', 'elevator' ); ?>" />
     </div>
 
     <div class="banner-row">
@@ -23,13 +23,11 @@
       <div class="banner-row-title">
 
         <div class="icon">
-          <div class="icon"><i class="fas fa-newspaper"></i></div>
+          <i class="fas fa-newspaper"></i>
         </div>
 
         <div class="banner-text">
-          <div class="banner-text">
-            <h1><span>Latest news</span><span>Information and case studies</span></h1>
-          </div>
+          <h1><span>Latest news</span><span>Information and case studies</span></h1>
         </div>
 
       </div>
@@ -53,7 +51,6 @@
             the_post(); ?>
             <?php
             $featured_img_url = get_the_post_thumbnail_url(get_the_ID(), 'full');
-            $image_id = get_post_thumbnail_id(get_the_ID());
 
             if (!has_post_thumbnail()) {
               $postbackupImage = get_field('news_backup_image', 'option');
@@ -69,7 +66,7 @@
                 </span>
                 <span class="pos-title">
                   <h3 class="card-title"><?php the_title(); ?></h3>
-                  <span class="primary-button">Read More</span>
+                  <span class="primary-button"><?php esc_html_e( 'Read More', 'elevator' ); ?></span>
                 </span>
               </a>
             </div>
@@ -81,14 +78,14 @@
         global $wp_query;
         $big = 999999999; // A large number to replace with actual paged value
         
-        echo paginate_links(array(
+        echo wp_kses_post( paginate_links( array(
           'base' => str_replace($big, '%#%', esc_url(get_pagenum_link($big))),
           'format' => '?paged=%#%',
           'current' => max(1, get_query_var('paged')),
           'total' => $wp_query->max_num_pages,
           'prev_text' => '',
           'next_text' => '',
-        ));
+        ) ) );
         ?>
       </div>
 

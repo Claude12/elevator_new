@@ -48,84 +48,20 @@ function elevator_conditionally_hook_gettext_filters()
 add_action('template_redirect', 'elevator_conditionally_hook_gettext_filters');
 
 /**
- * Override email heading for order received email.
+ * Override email heading to "ORDER ACKNOWLEDGMENT" for all customer-facing order emails.
  *
- * @param string   $heading Email heading.
- * @param WC_Order $order   Order object.
- * @param WC_Email $email   Email object.
- * @return string Modified heading.
+ * @return string
  */
-function elevator_email_heading_order_received($heading, $order, $email)
-{
-	return __('ORDER ACKNOWLEDGMENT', 'elevator');
+function elevator_email_heading_order_acknowledgment() {
+	return __( 'ORDER ACKNOWLEDGMENT', 'elevator' );
 }
-add_filter('woocommerce_email_heading_order_received', 'elevator_email_heading_order_received', 10, 3);
 
-/**
- * Override email heading for customer processing order email.
- *
- * @param string   $heading Email heading.
- * @param WC_Order $order   Order object.
- * @param WC_Email $email   Email object.
- * @return string Modified heading.
- */
-function elevator_email_heading_customer_processing_order($heading, $order, $email)
-{
-	return __('ORDER ACKNOWLEDGMENT', 'elevator');
-}
-add_filter('woocommerce_email_heading_customer_processing_order', 'elevator_email_heading_customer_processing_order', 10, 3);
-
-/**
- * Override email heading for customer completed order email.
- *
- * @param string   $heading Email heading.
- * @param WC_Order $order   Order object.
- * @param WC_Email $email   Email object.
- * @return string Modified heading.
- */
-function elevator_email_heading_customer_completed_order($heading, $order, $email)
-{
-	return __('ORDER ACKNOWLEDGMENT', 'elevator');
-}
-add_filter('woocommerce_email_heading_customer_completed_order', 'elevator_email_heading_customer_completed_order', 10, 3);
-
-/**
- * Override email heading for customer on-hold order email.
- *
- * @param string   $heading Email heading.
- * @param WC_Order $order   Order object.
- * @param WC_Email $email   Email object.
- * @return string Modified heading.
- */
-function elevator_email_heading_customer_on_hold_order($heading, $order, $email)
-{
-	return __('ORDER ACKNOWLEDGMENT', 'elevator');
-}
-add_filter('woocommerce_email_heading_customer_on_hold_order', 'elevator_email_heading_customer_on_hold_order', 10, 3);
-
-/**
- * Rename Billing Address to Invoice Address
- * and Shipping Address to Delivery Address
- * across all WooCommerce emails and pages
- */
-add_filter('gettext', 'custom_woocommerce_address_labels', 20, 3);
-function custom_woocommerce_address_labels($translated_text, $text, $domain)
-{
-	if ($domain === 'woocommerce') {
-		switch ($translated_text) {
-			case 'Billing address':
-				$translated_text = 'Invoice address';
-				break;
-			case 'Shipping address':
-				$translated_text = 'Delivery address';
-				break;
-			case 'Billing Address':
-				$translated_text = 'Invoice Address';
-				break;
-			case 'Shipping Address':
-				$translated_text = 'Delivery Address';
-				break;
-		}
-	}
-	return $translated_text;
+$elevator_order_email_heading_filters = array(
+	'woocommerce_email_heading_order_received',
+	'woocommerce_email_heading_customer_processing_order',
+	'woocommerce_email_heading_customer_completed_order',
+	'woocommerce_email_heading_customer_on_hold_order',
+);
+foreach ( $elevator_order_email_heading_filters as $filter ) {
+	add_filter( $filter, 'elevator_email_heading_order_acknowledgment', 10, 3 );
 }
