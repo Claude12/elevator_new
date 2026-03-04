@@ -62,7 +62,6 @@ function elevator_add_custom_tooltip_script() {
 					let scrollLeft = window.scrollX || document.documentElement.scrollLeft;
 
 					// Set tooltip position (Above the element)
-					let tooltipWidth = tooltip.offsetWidth;
 					let tooltipHeight = tooltip.offsetHeight;
 
 					tooltip.style.left = (rect.left + scrollLeft - 50) + "px";
