@@ -5829,6 +5829,14 @@ input[type="search"]:focus {
   #footer .p-4 {
     padding: 0 !important;
   }
+
+  #internal-banner .banner-logo {
+    text-align: center;
+  }
+
+  #internal-banner .banner-text .woocommerce-category-title {
+    max-width: 100%;
+  }
 }
 
 /* Cards */
@@ -5857,6 +5865,7 @@ input[type="search"]:focus {
   padding-left: 24px;
   padding-right: 24px;
   padding-bottom: 24px;
+  line-height: 1.6;
 }
 
 .tinv-wishlist .tinvwl_add_to_wishlist_button.tinvwl-icon-heart:before {
@@ -5906,7 +5915,7 @@ table.variations th.label {
 }
 
 .tinv-wishlist.tinvwl-after-add-to-cart .tinvwl_add_to_wishlist_button {
-  margin-top: 5px;
+  margin-top: 12px;
 }
 
 div.product form.cart .tinvwl_add_to_wishlist_button {
@@ -5970,4 +5979,14 @@ a.scroll-to-button:hover {
 
 a.scroll-to-button:visited {
   color: var(--color-white);
+}
+
+.woocommerce-MyAccount-navigation-link.is-active a {
+  text-decoration: underline;
+}
+
+body:not(.logged-in) .tinv-wraper.tinvwl-after-add-to-cart {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
 }

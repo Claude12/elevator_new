@@ -206,7 +206,7 @@ add_filter( 'woocommerce_product_get_gallery_image_ids', 'elevator_gif_gallery_r
 
 function elevator_add_custom_button_for_guests() {
     if ( ! is_user_logged_in() ) {
-        echo '<a href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '" class="button custom-login-button" style="margin-left: 10px;">' . esc_html__( 'Members - Please Login', 'elevator' ) . '</a>';
+        echo '<a href="' . esc_url( wc_get_page_permalink( 'myaccount' ) ) . '" class="button custom-login-button" style="margin-left: 10px !important;">' . esc_html__( 'Members - Please Login', 'elevator' ) . '</a>';
     }
 }
 add_action( 'woocommerce_after_add_to_cart_button', 'elevator_add_custom_button_for_guests' );
