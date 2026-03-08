@@ -11,8 +11,12 @@ get_header(); ?>
   <div class="container">
 
     <div class="banner-image">
-      <?php $banner_image = get_field('internal_banner_image'); ?>
-      <img src="/wp-content/uploads/2025/02/AI-elevator-2.png" />
+      <?php
+      $banner_image     = get_field( 'internal_banner_image' );
+      $banner_image_url = ( $banner_image && is_array( $banner_image ) ) ? $banner_image['url'] : get_template_directory_uri() . '/assets/images/AI-elevator-2.png';
+      $banner_image_alt = ( $banner_image && is_array( $banner_image ) && ! empty( $banner_image['alt'] ) ) ? $banner_image['alt'] : __( 'Banner image', 'elevator' );
+      ?>
+      <img src="<?php echo esc_url( $banner_image_url ); ?>" alt="<?php echo esc_attr( $banner_image_alt ); ?>" />
     </div>
 
     <div class="banner-row">

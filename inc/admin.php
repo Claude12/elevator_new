@@ -10,19 +10,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Hide Addify tabs in product editor.
+ * Register admin stylesheet and attach inline CSS for hiding Addify tabs.
  */
-function elevator_custom_admin_css() {
-	echo '<style>
-		#woocommerce-product-data .product_data_tabs li.addify_csp_customer_options {
-			display: none !important;
-		}
-		#woocommerce-product-data .product_data_tabs li.addify_csp_role_options {
-			display: none !important;
-		}
-	</style>';
+function elevator_register_admin_style() {
+	wp_register_style( 'elevator-admin', false ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+	wp_enqueue_style( 'elevator-admin' );
+	wp_add_inline_style( 'elevator-admin', '
+		#woocommerce-product-data .product_data_tabs li.addify_csp_customer_options { display: none !important; }
+		#woocommerce-product-data .product_data_tabs li.addify_csp_role_options { display: none !important; }
+	' );
 }
-add_action( 'admin_head', 'elevator_custom_admin_css' );
+add_action( 'admin_enqueue_scripts', 'elevator_register_admin_style' );
 
 /**
  * Normalize dash characters in product titles on save.
