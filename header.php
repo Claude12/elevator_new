@@ -76,6 +76,19 @@ if (! defined('ABSPATH')) {
 						<?php endif; ?>
 					</div>
 
+					<!-- Desktop Search -->
+					<div class="woo-search d-block-tablet">
+						<form role="search" method="get" class="woocommerce-product-search" action="<?php echo esc_url(home_url('/')); ?>">
+							<label class="screen-reader-text" for="woocommerce-product-search-field-desktop"><?php esc_html_e('Search for:', 'elevator'); ?></label>
+							<input type="search" id="woocommerce-product-search-field-desktop" class="search-field"
+								placeholder="<?php esc_attr_e('What are you looking for?', 'elevator'); ?>"
+								value="<?php echo esc_attr(get_search_query()); ?>" name="s"
+								style="background: <?php echo esc_attr($bg_color); ?>;" />
+							<button type="submit" class="search-submit"><i class="fas fa-search"></i></button>
+							<input type="hidden" name="post_type" value="product" />
+						</form>
+					</div>
+
 					<div class="site-header__inner-actions">
 
 						<!-- Actions -->
@@ -150,19 +163,6 @@ if (! defined('ABSPATH')) {
 							<?php endif; ?>
 
 						</div><!-- .site-header__actions -->
-					</div>
-
-					<!-- Desktop Search -->
-					<div class="woo-search d-block-tablet">
-						<form role="search" method="get" class="woocommerce-product-search" action="<?php echo esc_url(home_url('/')); ?>">
-							<label class="screen-reader-text" for="woocommerce-product-search-field-desktop"><?php esc_html_e('Search for:', 'elevator'); ?></label>
-							<input type="search" id="woocommerce-product-search-field-desktop" class="search-field"
-								placeholder="<?php esc_attr_e('What are you looking for?', 'elevator'); ?>"
-								value="<?php echo esc_attr(get_search_query()); ?>" name="s"
-								style="background: <?php echo esc_attr($bg_color); ?>;" />
-							<button type="submit" class="search-submit"><i class="fas fa-search"></i></button>
-							<input type="hidden" name="post_type" value="product" />
-						</form>
 					</div>
 
 				</div><!-- .site-header__inner -->

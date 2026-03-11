@@ -878,9 +878,13 @@ footer .add-info-wrapper p a:hover {
   height: 400px;
   bottom: 0;
   z-index: 0;
-  background: linear-gradient(270deg, #154ed3 0%, #eab27a 68%);
+  background: linear-gradient(270deg, #154ed3 0%, #021338 68%);
   clip-path: polygon(0% 100%, 100% 0%, 133% 85%);
   z-index: 0;
+}
+
+.banner-content ul {
+  margin-left: 0;
 }
 
 .banner-area .banner-content,
@@ -1661,7 +1665,7 @@ footer .add-info-wrapper p a:hover {
   color: #021338;
 }
 #fifty-repeater-container p strong a {
-  background: #eab27a;
+  background: var(--color-primary);
   color: #fff;
   text-transform: uppercase;
   padding: 20px 30px;
@@ -1673,7 +1677,7 @@ footer .add-info-wrapper p a:hover {
   margin-top: 15px;
 }
 #fifty-repeater-container p strong a:hover {
-  background: #154ed3;
+  background: var(--color-dark);
   color: #fff;
 }
 
@@ -5989,4 +5993,10 @@ body:not(.logged-in) .tinv-wraper.tinvwl-after-add-to-cart {
   display: block;
   width: 100%;
   margin-top: 12px;
+}
+
+.product_meta .posted_in,
+.product_meta .tagged_as,
+.product_meta .posted_in {
+  display: none;
 }
