@@ -17,6 +17,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 function elevator_custom_product_tabs( $tabs ) {
 
+    unset( $tabs['reviews'] );
+
     $tabs['custom_tab_1'] = array(
         'title'    => __( 'Technical Information', 'elevator' ),
         'priority' => 50,
@@ -27,6 +29,12 @@ function elevator_custom_product_tabs( $tabs ) {
         'title'    => __( 'Videos', 'elevator' ),
         'priority' => 60,
         'callback' => 'elevator_custom_product_tab_2_content',
+    );
+
+    $tabs['related_products'] = array(
+        'title'    => __( 'Related Products', 'elevator' ),
+        'priority' => 70,
+        'callback' => 'elevator_related_products_tab_content',
     );
 
     return $tabs;
@@ -79,6 +87,40 @@ function elevator_custom_product_tab_2_content() {
     }
 }
 
+function elevator_related_products_tab_content() {
+    global $product;
+
+    if ( ! $product || ! is_a( $product, 'WC_Product' ) ) {
+        return;
+    }
+
+    $args = array(
+        'posts_per_page' => 4,
+        'columns'        => 4,
+        'orderby'        => 'rand',
+    );
+
+    $args = apply_filters( 'woocommerce_related_products_args', $args );
+
+    $related_ids = wc_get_related_products( $product->get_id(), $args['posts_per_page'] );
+
+    if ( ! $related_ids ) {
+        echo '<p>' . esc_html__( 'No related products found.', 'elevator' ) . '</p>';
+        return;
+    }
+
+    wc_get_template(
+        'single-product/related.php',
+        array(
+            'related_products' => array_filter(
+                array_map( 'wc_get_product', $related_ids ),
+                'wc_products_array_filter_visible'
+            ),
+            'args'             => $args,
+        )
+    );
+}
+
 /**
  * Remove Additional Information tab.
  */
@@ -87,6 +129,11 @@ function elevator_remove_additional_information_tab( $tabs ) {
     return $tabs;
 }
 add_filter( 'woocommerce_product_tabs', 'elevator_remove_additional_information_tab' );
+
+/**
+ * Remove standalone related products output below the tabs.
+ */
+remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
 
 
 /**
