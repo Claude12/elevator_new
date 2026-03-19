@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Elevator theme functions and definitions.
  *
@@ -9,12 +10,12 @@
  * @package elevator
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
+if (! defined('ABSPATH')) {
+    exit;
 }
 
-if ( ! defined( '_S_VERSION' ) ) {
-	define( '_S_VERSION', '1.0.0' );
+if (! defined('_S_VERSION')) {
+    define('_S_VERSION', '1.0.0');
 }
 
 /**
@@ -75,22 +76,22 @@ require get_template_directory() . '/inc/woocommerce-helpers.php';
 /**
  * WooCommerce compatibility (only if WooCommerce is active).
  */
-if ( class_exists( 'WooCommerce' ) ) {
-	require get_template_directory() . '/inc/woocommerce.php';
-	require get_template_directory() . '/inc/woocommerce-archive.php';
-	require get_template_directory() . '/inc/woocommerce-single-product.php';
-	require get_template_directory() . '/inc/woocommerce-search.php';
-	require get_template_directory() . '/inc/woocommerce-account.php';
-	// require get_template_directory() . '/inc/woocommerce-continuous-length.php';
-	require get_template_directory() . '/inc/woocommerce-emails.php';
-	require get_template_directory() . '/inc/woocommerce-quote.php';
-	require get_template_directory() . '/inc/woocommerce-quote-po.php';
-	require get_template_directory() . '/inc/woocommerce-order-delivery.php';
+if (class_exists('WooCommerce')) {
+    require get_template_directory() . '/inc/woocommerce.php';
+    require get_template_directory() . '/inc/woocommerce-archive.php';
+    require get_template_directory() . '/inc/woocommerce-single-product.php';
+    require get_template_directory() . '/inc/woocommerce-search.php';
+    require get_template_directory() . '/inc/woocommerce-account.php';
+    // require get_template_directory() . '/inc/woocommerce-continuous-length.php';
+    require get_template_directory() . '/inc/woocommerce-emails.php';
+    require get_template_directory() . '/inc/woocommerce-quote.php';
+    require get_template_directory() . '/inc/woocommerce-quote-po.php';
+    require get_template_directory() . '/inc/woocommerce-order-delivery.php';
 }
 
 /**
  * Load Jetpack compatibility file (only if Jetpack is active).
  */
-if ( defined( 'JETPACK__VERSION' ) ) {
-	require get_template_directory() . '/inc/jetpack.php';
+if (defined('JETPACK__VERSION')) {
+    require get_template_directory() . '/inc/jetpack.php';
 }

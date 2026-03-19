@@ -95,8 +95,8 @@ function elevator_related_products_tab_content() {
     }
 
     $args = array(
-        'posts_per_page' => 4,
-        'columns'        => 4,
+        'posts_per_page' => 3,
+        'columns'        => 3,
         'orderby'        => 'rand',
     );
 
