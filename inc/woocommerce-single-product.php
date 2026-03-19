@@ -94,26 +94,30 @@ function elevator_related_products_tab_content() {
         return;
     }
 
+    $upsell_ids = $product->get_upsell_ids();
+
+    if ( ! $upsell_ids ) {
+        echo '<p>' . esc_html__( 'No products to display.', 'elevator' ) . '</p>';
+        return;
+    }
+
     $args = array(
         'posts_per_page' => 3,
         'columns'        => 3,
         'orderby'        => 'rand',
     );
 
-    $args = apply_filters( 'woocommerce_related_products_args', $args );
-
-    $related_ids = wc_get_related_products( $product->get_id(), $args['posts_per_page'] );
-
-    if ( ! $related_ids ) {
-        echo '<p>' . esc_html__( 'No related products found.', 'elevator' ) . '</p>';
-        return;
+    if ( 'rand' === $args['orderby'] ) {
+        shuffle( $upsell_ids );
     }
+
+    $upsell_ids = array_slice( $upsell_ids, 0, $args['posts_per_page'] );
 
     wc_get_template(
         'single-product/related.php',
         array(
             'related_products' => array_filter(
-                array_map( 'wc_get_product', $related_ids ),
+                array_map( 'wc_get_product', $upsell_ids ),
                 'wc_products_array_filter_visible'
             ),
             'args'             => $args,
@@ -131,9 +135,10 @@ function elevator_remove_additional_information_tab( $tabs ) {
 add_filter( 'woocommerce_product_tabs', 'elevator_remove_additional_information_tab' );
 
 /**
- * Remove standalone related products output below the tabs.
+ * Remove standalone related products and upsells output below the tabs.
  */
 remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_output_related_products', 20 );
+remove_action( 'woocommerce_after_single_product_summary', 'woocommerce_upsell_display', 15 );
 
 
 /**
