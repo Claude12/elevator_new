@@ -1375,6 +1375,18 @@ footer .add-info-wrapper p a:hover {
 #social-feed-area .top-bar .x-button {
   background: #1da1f2;
 }
+#social-feed-area .top-bar .insta-button {
+  background: #405de6;
+}
+#social-feed-area .top-bar .linkedin-button {
+  background: #0a66c6;
+}
+#social-feed-area .top-bar .facebook-button:hover,
+#social-feed-area .top-bar .x-button:hover,
+#social-feed-area .top-bar .insta-button:hover,
+#social-feed-area .top-bar .linkedin-button:hover {
+  background: var(--color-dark);
+}
 
 /*-------------------------------------------
 === Devider
@@ -2123,25 +2135,25 @@ footer .add-info-wrapper p a:hover {
   display: flex;
   flex-direction: column;
 }
-#primary .products li a h2 {
-  font-size: 16px;
+.product-category-content .products li a h2 {
+  font-size: 16px !important;
   font-weight: 700;
-  padding: 20px;
+  padding: 20px !important;
   min-height: 100px;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
   justify-content: space-between;
 }
-#primary .products li a h2 .count {
+.product-category-content .products li a h2 .count {
   display: none;
 }
-#primary .products li a h2:after {
+.product-category-content .products li a h2:after {
   font-family: "Font Awesome 6 Free"; /* Make sure to use the correct Font Awesome version */
   font-weight: 900; /* Font weight for solid icons */
   content: "\f35a"; /* Unicode for the star icon */
   margin-left: 5px; /* Space between text and icon */
-  color: #021338; /* Customize color */
+  color: #021338 !important; /* Customize color */
   width: 100%;
   float: right;
   text-align: right;
@@ -2151,17 +2163,22 @@ footer .add-info-wrapper p a:hover {
   display: block;
   align-content: end;
 }
-#primary .products li a h2:hover:after {
+.product-category-content .products li a h2:hover:after {
   color: #021338;
 }
-#primary .products li a h2:hover {
+.product-category-content .products li a h2:hover {
   color: #4d4d4d;
   text-decoration: underline;
 }
-#primary .products li a img {
+.product-category-content .products li a img {
   border-radius: 20px 20px 0 0;
   margin-bottom: 0;
 }
+
+.product-category-content .products li a .price {
+  display: none !important;
+}
+
 #primary .products li a.tinvwl_add_to_wishlist_button {
   position: absolute;
   left: 0;
@@ -2218,11 +2235,11 @@ footer .add-info-wrapper p a:hover {
   margin-bottom: 15px;
 }
 
-.product-template-default .product .summary .price {
+.product-template-default .product .price {
   font-size: 26px;
   font-weight: 800;
   text-transform: uppercase;
-  color: #154ed3;
+  color: var(--color-accent) !important;
 }
 
 .product-template-default
@@ -5349,7 +5366,7 @@ body:not(.logged-in) .woocommerce .product-price {
 
 /* Row has convert-to-order button */
 .woocommerce-account tr.has-convert-button {
-  background-color: var(--color-accent) !important;
+  background-color: transparent !important;
 }
 
 /* Pending */
