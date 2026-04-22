@@ -1,9 +1,19 @@
 <?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
 
 <?php
-// ── Pull custom meta ──────────────────────────────────────────────────────────
+// ── Pull custom meta ────────────────────────────────────────────────────────
 $po_number = $this->order->get_meta( 'additional_purchase_order' );
 $courier   = $this->order->get_meta( 'courier' );
+
+// WooCommerce store address settings
+$store_address      = get_option( 'woocommerce_store_address' );
+$store_address_2    = get_option( 'woocommerce_store_address_2' );
+$store_city         = get_option( 'woocommerce_store_city' );
+$store_postcode     = get_option( 'woocommerce_store_postcode' );
+$store_state        = get_option( 'woocommerce_store_state' );
+$store_country      = get_option( 'woocommerce_store_country' );
+$store_email        = get_option( 'woocommerce_email_from_address', get_option( 'admin_email' ) );
+$store_phone        = get_option( 'woocommerce_store_phone' );
 ?>
 
 <?php do_action( 'wpo_wcpdf_before_document', $this->get_type(), $this->order ); ?>
@@ -24,10 +34,26 @@ $courier   = $this->order->get_meta( 'courier' );
 			<div class="shop-name"><h3><?php $this->shop_name(); ?></h3></div>
 			<?php do_action( 'wpo_wcpdf_after_shop_name', $this->get_type(), $this->order ); ?>
 			<div class="shop-address">
-				Unit 11-13<br>
-				Parker Drive<br>
-				Leicester<br>
-				LE4 0JP
+				<?php
+				if ( $store_address ) {
+					echo esc_html( $store_address ) . '<br>';
+				}
+				if ( $store_address_2 ) {
+					echo esc_html( $store_address_2 ) . '<br>';
+				}
+				if ( $store_city ) {
+					echo esc_html( $store_city ) . '<br>';
+				}
+				if ( $store_state ) {
+					echo esc_html( $store_state ) . '<br>';
+				}
+				if ( $store_postcode ) {
+					echo esc_html( $store_postcode ) . '<br>';
+				}
+				if ( $store_country ) {
+					echo esc_html( $store_country ) . '<br>';
+				}
+				?>
 			</div>
 			<?php do_action( 'wpo_wcpdf_before_shop_phone_number', $this->get_type(), $this->order ); ?>
 			<?php if ( ! empty( $this->get_shop_phone_number() ) ) : ?>

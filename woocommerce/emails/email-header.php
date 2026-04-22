@@ -17,10 +17,12 @@ $email_improvements_enabled = FeaturesUtil::feature_is_enabled( 'email_improveme
 $store_name                 = $store_name ?? get_bloginfo( 'name', 'display' );
 
 // WooCommerce store address settings
-$store_address  = get_option( 'woocommerce_store_address' );
-$store_city     = get_option( 'woocommerce_store_city' );
-$store_postcode = get_option( 'woocommerce_store_postcode' );
-$store_country  = get_option( 'woocommerce_store_country' );
+$store_address      = get_option( 'woocommerce_store_address' );
+$store_address_2    = get_option( 'woocommerce_store_address_2' );
+$store_city         = get_option( 'woocommerce_store_city' );
+$store_postcode     = get_option( 'woocommerce_store_postcode' );
+$store_state        = get_option( 'woocommerce_store_state' );
+$store_country      = get_option( 'woocommerce_store_country' );
 
 // Store email (falls back to admin email if not set)
 $store_email = get_option( 'woocommerce_email_from_address', get_option( 'admin_email' ) );
@@ -62,7 +64,7 @@ $store_email = get_option( 'woocommerce_email_from_address', get_option( 'admin_
                                                 ?>
                                             </td>
                                             <!-- Store title, address, email -->
-                                            <td style="width:50%; text-align:right; vertical-align:middle; font-size:14px; color:#555;">
+                                            <td style="width:50%; text-align:right; vertical-align:middle; font-size:13px; color:#555;">
                                                 <p style="margin:0; font-size:18px; font-weight:bold; color:#000;">
                                                     <?php echo esc_html( $store_name ); ?>
                                                 </p>
@@ -70,8 +72,17 @@ $store_email = get_option( 'woocommerce_email_from_address', get_option( 'admin_
                                                 if ( $store_address ) {
                                                     echo esc_html( $store_address ) . '<br>';
                                                 }
-                                                if ( $store_city || $store_postcode ) {
-                                                    echo esc_html( $store_city ) . ( $store_postcode ? ', ' . esc_html( $store_postcode ) : '' ) . '<br>';
+                                                if ( $store_address_2 ) {
+                                                    echo esc_html( $store_address_2 ) . '<br>';
+                                                }
+                                                if ( $store_city ) {
+                                                    echo esc_html( $store_city ) . '<br>';
+                                                }
+                                                if ( $store_state ) {
+                                                    echo esc_html( $store_state ) . '<br>';
+                                                }
+                                                if ( $store_postcode ) {
+                                                    echo esc_html( $store_postcode ) . '<br>';
                                                 }
                                                 if ( $store_country ) {
                                                     echo esc_html( $store_country ) . '<br>';

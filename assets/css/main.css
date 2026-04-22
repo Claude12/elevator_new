@@ -5079,6 +5079,7 @@ form.woocommerce-ordering select.orderby {
 .woocommerce-order-actions {
   display: flex;
   gap: 16px;
+  margin-bottom: 24px;
 }
 
 .woocommerce-order-actions a.button {
