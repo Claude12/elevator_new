@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WooCommerce Compatibility File.
  *
@@ -6,14 +7,15 @@
  * @package elevator
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (! defined('ABSPATH')) {
 	exit;
 }
 
 /**
  * Declare WooCommerce support.
  */
-function elevator_woocommerce_setup() {
+function elevator_woocommerce_setup()
+{
 	add_theme_support(
 		'woocommerce',
 		array(
@@ -28,29 +30,30 @@ function elevator_woocommerce_setup() {
 			),
 		)
 	);
-	add_theme_support( 'wc-product-gallery-zoom' );
-	add_theme_support( 'wc-product-gallery-lightbox' );
-	add_theme_support( 'wc-product-gallery-slider' );
+	add_theme_support('wc-product-gallery-zoom');
+	add_theme_support('wc-product-gallery-lightbox');
+	add_theme_support('wc-product-gallery-slider');
 }
-add_action( 'after_setup_theme', 'elevator_woocommerce_setup' );
+add_action('after_setup_theme', 'elevator_woocommerce_setup');
 
 /**
  * WooCommerce specific scripts & stylesheets.
  */
-function elevator_woocommerce_scripts() {
+function elevator_woocommerce_scripts()
+{
 	$woo_css_path = get_template_directory() . '/woocommerce.css';
 
 	// Only enqueue if the file actually exists.
-	if ( file_exists( $woo_css_path ) ) {
+	if (file_exists($woo_css_path)) {
 		wp_enqueue_style(
 			'elevator-woocommerce-style',
 			get_template_directory_uri() . '/woocommerce.css',
 			array(),
-			filemtime( $woo_css_path )
+			filemtime($woo_css_path)
 		);
 	}
 }
-add_action( 'wp_enqueue_scripts', 'elevator_woocommerce_scripts' );
+add_action('wp_enqueue_scripts', 'elevator_woocommerce_scripts');
 
 /**
  * NOTE: We intentionally keep WooCommerce default stylesheets enabled.
@@ -64,11 +67,12 @@ add_action( 'wp_enqueue_scripts', 'elevator_woocommerce_scripts' );
  * @param array $classes CSS classes applied to the body tag.
  * @return array
  */
-function elevator_woocommerce_active_body_class( $classes ) {
+function elevator_woocommerce_active_body_class($classes)
+{
 	$classes[] = 'woocommerce-active';
 	return $classes;
 }
-add_filter( 'body_class', 'elevator_woocommerce_active_body_class' );
+add_filter('body_class', 'elevator_woocommerce_active_body_class');
 
 /**
  * Related Products Args.
@@ -76,14 +80,15 @@ add_filter( 'body_class', 'elevator_woocommerce_active_body_class' );
  * @param array $args Related products args.
  * @return array
  */
-function elevator_woocommerce_related_products_args( $args ) {
+function elevator_woocommerce_related_products_args($args)
+{
 	$defaults = array(
 		'posts_per_page' => 3,
 		'columns'        => 3,
 	);
-	return wp_parse_args( $defaults, $args );
+	return wp_parse_args($defaults, $args);
 }
-add_filter( 'woocommerce_output_related_products_args', 'elevator_woocommerce_related_products_args' );
+add_filter('woocommerce_output_related_products_args', 'elevator_woocommerce_related_products_args');
 
 /**
  * Remove default WooCommerce content wrappers.
@@ -91,68 +96,109 @@ add_filter( 'woocommerce_output_related_products_args', 'elevator_woocommerce_re
  * Our archive-product.php and single-product.php templates provide
  * their own container markup, so the default <main> wrapper is not needed.
  */
-remove_action( 'woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10 );
-remove_action( 'woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10 );
+remove_action('woocommerce_before_main_content', 'woocommerce_output_content_wrapper', 10);
+remove_action('woocommerce_after_main_content', 'woocommerce_output_content_wrapper_end', 10);
 
 /**
  * Remove default WooCommerce breadcrumbs.
  *
  * We use Rank Math breadcrumbs instead.
  */
-remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
+remove_action('woocommerce_before_main_content', 'woocommerce_breadcrumb', 20);
 
-if ( ! function_exists( 'elevator_woocommerce_cart_link_fragment' ) ) {
+if (! function_exists('elevator_woocommerce_cart_link_fragment')) {
 	/**
 	 * Cart Fragments — update cart via AJAX.
 	 *
 	 * @param array $fragments Fragments to refresh via AJAX.
 	 * @return array
 	 */
-	function elevator_woocommerce_cart_link_fragment( $fragments ) {
+	function elevator_woocommerce_cart_link_fragment($fragments)
+	{
 		ob_start();
 		elevator_woocommerce_cart_link();
 		$fragments['a.cart-contents'] = ob_get_clean();
 		return $fragments;
 	}
 }
-add_filter( 'woocommerce_add_to_cart_fragments', 'elevator_woocommerce_cart_link_fragment' );
+add_filter('woocommerce_add_to_cart_fragments', 'elevator_woocommerce_cart_link_fragment');
 
-if ( ! function_exists( 'elevator_woocommerce_cart_link' ) ) {
+if (! function_exists('elevator_woocommerce_cart_link')) {
 	/**
 	 * Cart Link — displayed in header.
 	 */
-	function elevator_woocommerce_cart_link() {
-		?>
-		<a class="cart-contents" href="<?php echo esc_url( wc_get_cart_url() ); ?>" title="<?php esc_attr_e( 'View your shopping cart', 'elevator' ); ?>">
+	function elevator_woocommerce_cart_link()
+	{
+?>
+		<a class="cart-contents" href="<?php echo esc_url(wc_get_cart_url()); ?>" title="<?php esc_attr_e('View your shopping cart', 'elevator'); ?>">
 			<?php
 			$item_count_text = sprintf(
 				/* translators: number of items in the mini cart. */
-				_n( '%d item', '%d items', WC()->cart->get_cart_contents_count(), 'elevator' ),
+				_n('%d item', '%d items', WC()->cart->get_cart_contents_count(), 'elevator'),
 				WC()->cart->get_cart_contents_count()
 			);
 			?>
-			<span class="amount"><?php echo wp_kses_data( WC()->cart->get_cart_subtotal() ); ?></span>
-			<span class="count"><?php echo esc_html( $item_count_text ); ?></span>
+			<span class="amount"><?php echo wp_kses_data(WC()->cart->get_cart_subtotal()); ?></span>
+			<span class="count"><?php echo esc_html($item_count_text); ?></span>
 		</a>
-		<?php
+	<?php
 	}
 }
 
-if ( ! function_exists( 'elevator_woocommerce_header_cart' ) ) {
+if (! function_exists('elevator_woocommerce_header_cart')) {
 	/**
 	 * Display Header Cart.
 	 */
-	function elevator_woocommerce_header_cart() {
+	function elevator_woocommerce_header_cart()
+	{
 		$class = is_cart() ? 'current-menu-item' : '';
-		?>
+	?>
 		<ul id="site-header-cart" class="site-header-cart">
-			<li class="<?php echo esc_attr( $class ); ?>">
+			<li class="<?php echo esc_attr($class); ?>">
 				<?php elevator_woocommerce_cart_link(); ?>
 			</li>
 			<li>
-				<?php the_widget( 'WC_Widget_Cart', array( 'title' => '' ) ); ?>
+				<?php the_widget('WC_Widget_Cart', array('title' => '')); ?>
 			</li>
 		</ul>
-		<?php
+<?php
 	}
 }
+
+/**
+ * Include SKU in WooCommerce Product Search Results.
+ */
+function elevator_include_sku_in_search($search, $wp_query)
+{
+	global $wpdb;
+
+	// Only run this on the front-end search page for products
+	if (! is_admin() && $wp_query->is_search && $wp_query->is_main_query() && isset($_GET['post_type']) && $_GET['post_type'] === 'product') {
+
+		$search_term = $wp_query->query_vars['s'];
+
+		// Add a condition to include posts where the SKU meta value matches the search term
+		$search = str_replace(
+			'AND (((',
+			'AND (((' . $wpdb->prepare("({$wpdb->posts}.ID IN (SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_sku' AND meta_value LIKE %s)) OR ", '%' . $wpdb->esc_like($search_term) . '%'),
+			$search
+		);
+	}
+	return $search;
+}
+add_filter('posts_search', 'elevator_include_sku_in_search', 10, 2);
+
+// Remove "Congratulations on the sale."
+add_filter('woocommerce_email_additional_content_new_order', '__return_empty_string');
+
+// Remove "Process your orders on the go. Get the app."
+add_action('woocommerce_init', function () {
+	// Get the email object WooCommerce created
+	$mailer = WC()->mailer();
+	if ($mailer) {
+		$new_order_email = $mailer->get_emails()['WC_Email_New_Order'] ?? null;
+		if ($new_order_email) {
+			remove_action('woocommerce_email_footer', [$new_order_email, 'mobile_messaging'], 9);
+		}
+	}
+});
