@@ -40,8 +40,8 @@
   --color-dark: #021338;
   --color-accent: #154ed3;
   --color-grey-bg: #f2f2f2;
-  --color-text: #717171;
-  --color-text-dark: #4d4d4d;
+  --color-text: #021338;
+  --color-text-dark: #021338;
   --color-white: #fff;
   --color-whatsapp: #25d366;
   --color-whatsapp-dk: #075e54;
@@ -90,7 +90,7 @@ li {
   font-family: "Poppins", serif;
   font-weight: 400;
   font-style: normal;
-  color: #717171;
+  color: #021338;
   font-size: 14px;
 }
 
@@ -213,7 +213,12 @@ img {
   max-width: 700px;
   z-index: -1;
   width: 100%;
-  opacity: 0.4;
+  opacity: 0.1;
+}
+
+.bg,
+.bg-logo-3 {
+  opacity: 0.1 !important;
 }
 
 .bg-logo-1,
@@ -1672,7 +1677,7 @@ footer .add-info-wrapper p a:hover {
 .rank-math-breadcrumb p {
   font-family: "Poppins", serif;
   font-weight: 400;
-  color: #4d4d4d;
+  color: #021338;
 }
 .rank-math-breadcrumb p a {
   text-decoration: none;
@@ -1758,7 +1763,7 @@ footer .add-info-wrapper p a:hover {
 
 .page-template-contact .wpcf7 input {
   font-weight: 700;
-  color: #4d4d4d;
+  color: #021338;
   width: 100%;
   padding: 15px;
   border-radius: 15px;
@@ -1767,7 +1772,7 @@ footer .add-info-wrapper p a:hover {
 }
 .page-template-contact .wpcf7 textarea {
   font-weight: 700;
-  color: #4d4d4d;
+  color: #021338;
   width: 100%;
   padding: 15px;
   border-radius: 15px;
@@ -1869,7 +1874,7 @@ footer .add-info-wrapper p a:hover {
   font-size: 19px;
   font-weight: 600;
   margin-bottom: 40px;
-  color: #4d4d4d;
+  color: #021338;
 }
 .single-archive-element a .pos-title .primary-button {
   float: right;
@@ -2159,7 +2164,7 @@ footer .add-info-wrapper p a:hover {
   text-align: right;
   margin-top: 15px;
   font-size: 30px;
-  color: #4d4d4d;
+  color: #021338;
   display: block;
   align-content: end;
 }
@@ -2167,7 +2172,7 @@ footer .add-info-wrapper p a:hover {
   color: #021338;
 }
 .product-category-content .products li a h2:hover {
-  color: #4d4d4d;
+  color: #021338;
   text-decoration: underline;
 }
 .product-category-content .products li a img {
@@ -2212,7 +2217,7 @@ footer .add-info-wrapper p a:hover {
 }
 #sidebar ul li a {
   text-decoration: none;
-  color: #4d4d4d;
+  color: #021338;
   text-transform: uppercase;
 }
 #sidebar ul li a:hover {
@@ -2226,7 +2231,7 @@ footer .add-info-wrapper p a:hover {
 }
 #sidebar .tinvwl a {
   font-size: 14px;
-  color: #4d4d4d;
+  color: #021338;
 }
 
 /* Single Product Page */
@@ -2252,7 +2257,7 @@ footer .add-info-wrapper p a:hover {
 .product-template-default .product .summary .product_meta .sku_wrapper {
   font-family: "Open Sans", sans-serif;
   font-weight: 800;
-  color: #4d4d4d;
+  color: #021338;
   font-size: 24px;
 }
 
@@ -2293,7 +2298,7 @@ footer .add-info-wrapper p a:hover {
   font-size: 14px;
 }
 .product-template-default .product .summary .duplicated-product-meta a {
-  color: #4d4d4d;
+  color: #021338;
   text-transform: uppercase;
   font-family: "Poppins", serif;
   font-weight: 400;
@@ -2306,7 +2311,7 @@ footer .add-info-wrapper p a:hover {
   font-family: "Poppins", serif;
   font-weight: 600;
   font-size: 14px;
-  color: #4d4d4d;
+  color: #021338;
   margin-top: 30px;
   display: block;
 }
@@ -2871,7 +2876,7 @@ footer .add-info-wrapper p a:hover {
   margin-bottom: 12px;
 }
 #fifty-repeater-container .fifty-repeater-row p {
-  color: #4d4d4d;
+  color: #021338;
   margin-bottom: 18px;
 }
 #fifty-repeater-container .fifty-repeater-row p strong {
@@ -2972,7 +2977,7 @@ section.breadcrumbs.py-3 {
 .product-category-main-wrap .term-description p {
   font-size: 18px;
   margin-bottom: 20px;
-  color: #4d4d4d;
+  color: #021338;
 }
 .archive ul.products li.product a[aria-label^="Visit product"] {
   display: flex;
@@ -3418,7 +3423,7 @@ section.breadcrumbs.py-3 {
 #primary .woovr-variation-selector label.variation-label {
   font-size: 20px;
   font-family: "Poppins";
-  color: #4d4d4d;
+  color: #021338;
   font-weight: 600;
 }
 #primary .woovr-variation-selector .woovr-variation-select {
